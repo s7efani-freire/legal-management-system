@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PageContainer from '../../components/ui/PageContainer';
 
-const CadastroAcoesLegais: React.FC = () => {
+const CadastroCondominos: React.FC = () => {
   const [formData, setFormData] = useState({
     nome: '',
     sobrenome: '',
@@ -10,17 +10,36 @@ const CadastroAcoesLegais: React.FC = () => {
     telefone: '',
     tipoDeTelefone: '',
     cep: '',
-    Logradouro: '',
+    logradouro: '',
     numero: '',
     complemento: '',
     uf: '',
     cidade: '',
+    unidades: [
+      { condominio: '', bloco: '', andar: '', numero: '' }
+    ]
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleUnidadeChange = (index: number, e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const newUnidades = [...formData.unidades];
+    newUnidades[index][e.target.name] = e.target.value;
+    setFormData({
+      ...formData,
+      unidades: newUnidades
+    });
+  };
+
+  const addUnidade = () => {
+    setFormData({
+      ...formData,
+      unidades: [...formData.unidades, { condominio: '', bloco: '', andar: '', numero: '' }]
     });
   };
 
@@ -30,272 +49,122 @@ const CadastroAcoesLegais: React.FC = () => {
   };
 
   return (
-    <PageContainer title="Cadastro de Ações Legais" className="max-w-4xl">
+    <PageContainer title="Cadastro de Condôminos" className="max-w-4xl">
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Ação Legal */}
+
+        {/* Informações Pessoais */}
         <div>
-          <h3 className="text-lg font-medium text-text-secondary mb-4">Ação Legal</h3>
+          <h3 className="text-lg font-medium text-text-secondary mb-4">Informações Pessoais</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="md:col-span-1">
-              <label htmlFor="titulo" className="block text-sm font-medium text-text-primary mb-1">
-                Título
-              </label>
-              <input
-                type="text"
-                id="titulo"
-                name="titulo"
-                value={formData.titulo}
-                onChange={handleChange}
-                placeholder="Digite o título da ação"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
+            <div>
+              <label htmlFor="nome" className="block text-sm font-medium text-text-primary mb-1">Nome</label>
+              <input type="text" id="nome" name="nome" placeholder="Digite o primeiro nome" value={formData.nome} onChange={handleChange} />
             </div>
-
-            <div className="md:col-span-1">
-              <label htmlFor="tipoAcao" className="block text-sm font-medium text-text-primary mb-1">
-                Tipo de ação
-              </label>
-              <select
-                id="tipoAcao"
-                name="tipoAcao"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              >
+            <div>
+              <label htmlFor="sobrenome" className="block text-sm font-medium text-text-primary mb-1">Sobrenome</label>
+              <input type="text" id="sobrenome" name="sobrenome" placeholder="Digite o sobrenome" value={formData.sobrenome} onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-text-primary mb-1">E-mail</label>
+              <input type="email" id="email" name="email" placeholder="emaildocondomino@email.com" value={formData.email} onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="documento" className="block text-sm font-medium text-text-primary mb-1">Documento</label>
+              <input type="text" id="documento" name="documento" placeholder="Digite o CPF ou CNPJ" value={formData.documento} onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="telefone" className="block text-sm font-medium text-text-primary mb-1">Telefone</label>
+              <input type="tel" id="telefone" name="telefone" placeholder="+55 (xx) xxxx-xxxx" value={formData.telefone} onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="tipoDeTelefone" className="block text-sm font-medium text-text-primary mb-1">Tipo de telefone</label>
+              <select id="tipoDeTelefone" name="tipoDeTelefone" value={formData.tipoDeTelefone} onChange={handleChange}>
                 <option value="">Selecione</option>
-                <option value="cobranca">Cobrança</option>
-                <option value="despejo">Despejo</option>
-                <option value="revisional">Revisional</option>
+                <option value="celular">Celular</option>
+                <option value="fixo">Fixo</option>
               </select>
             </div>
-
-            <div className="md:col-span-2">
-              <label htmlFor="descricao" className="block text-sm font-medium text-text-primary mb-1">
-                Descrição
-              </label>
-              <textarea
-                id="descricao"
-                name="descricao"
-                value={formData.descricao}
-                onChange={handleChange}
-                placeholder="Descreva a ação"
-                rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
+            <div>
+              <label htmlFor="cep" className="block text-sm font-medium text-text-primary mb-1">CEP</label>
+              <input type="text" id="cep" name="cep" placeholder="Digite o CEP" value={formData.cep} onChange={handleChange} />
             </div>
-
-            <div className="md:col-span-1">
-              <label htmlFor="advogadoResponsavel" className="block text-sm font-medium text-text-primary mb-1">
-                Advogado Responsável
-              </label>
-              <select
-                id="advogadoResponsavel"
-                name="advogadoResponsavel"
-                value={formData.advogadoResponsavel}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              >
+            <div>
+              <label htmlFor="logradouro" className="block text-sm font-medium text-text-primary mb-1">Logradouro</label>
+              <input type="text" id="logradouro" name="logradouro" placeholder="Digite a rua, ou avenida" value={formData.logradouro} onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="numero" className="block text-sm font-medium text-text-primary mb-1">Número</label>
+              <input type="text" id="numero" name="numero" placeholder="Nº" value={formData.numero} onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="complemento" className="block text-sm font-medium text-text-primary mb-1">Complemento</label>
+              <input type="text" id="complemento" name="complemento" placeholder="Bloco, casa, etc." value={formData.complemento} onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="uf" className="block text-sm font-medium text-text-primary mb-1">UF</label>
+              <select id="uf" name="uf" value={formData.uf} onChange={handleChange}>
                 <option value="">Selecione</option>
-                <option value="dr-dias">Dr. Dias</option>
-                <option value="dr-nunes">Dr. Nunes</option>
+                <option value="SP">SP</option>
+                <option value="RJ">RJ</option>
               </select>
             </div>
-
-            <div className="md:col-span-1">
-              <label htmlFor="honorario" className="block text-sm font-medium text-text-primary mb-1">
-                Honorário
-              </label>
-              <input
-                type="text"
-                id="honorario"
-                name="honorario"
-                value={formData.honorario}
-                onChange={handleChange}
-                placeholder="R$ 0,00"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
-            </div>
-
-            <div className="md:col-span-1">
-              <label htmlFor="condominio" className="block text-sm font-medium text-text-primary mb-1">
-                Condomínio
-              </label>
-              <select
-                id="condominio"
-                name="condominio"
-                value={formData.condominio}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              >
-                <option value="">Selecione ou digite para pesquisar</option>
-                <option value="cond1">Condomínio Exemplo 1</option>
-                <option value="cond2">Condomínio Exemplo 2</option>
-              </select>
-            </div>
-
-            <div className="md:col-span-1">
-              <label htmlFor="condominos" className="block text-sm font-medium text-text-primary mb-1">
-                Condômino
-              </label>
-              <select
-                id="condominos"
-                name="condominos"
-                value={formData.condominos}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              >
-                <option value="">Selecione ou digite para pesquisar</option>
-                <option value="cond1">João Silva</option>
-                <option value="cond2">Maria Santos</option>
-              </select>
+            <div>
+              <label htmlFor="cidade" className="block text-sm font-medium text-text-primary mb-1">Cidade</label>
+              <input type="text" id="cidade" name="cidade" placeholder="Cidade" value={formData.cidade} onChange={handleChange} />
             </div>
           </div>
         </div>
 
-        {/* Ação Judicial */}
+        {/* Unidades Residenciais */}
         <div>
-          <h3 className="text-lg font-medium text-text-secondary mb-4">Ação Judicial</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="md:col-span-1">
-              <label htmlFor="instanciaJudicial" className="block text-sm font-medium text-text-primary mb-1">
-                Instância Judicial
-              </label>
-              <input
-                type="text"
-                id="instanciaJudicial"
-                name="instanciaJudicial"
-                value={formData.instanciaJudicial}
-                onChange={handleChange}
-                placeholder="Digite o título da ação"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
+          <h3 className="text-lg font-medium text-text-secondary mb-4">Unidades Residenciais</h3>
+          {formData.unidades.map((unidade, index) => (
+            <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center mb-2">
+              <div>
+                <label className="block text-sm font-medium text-text-primary mb-1">Condomínio</label>
+                <select name="condominio" value={unidade.condominio} onChange={(e) => handleUnidadeChange(index, e)}>
+                  <option value="">Selecione ou digite para pesquisar</option>
+                  <option value="cond1">Condomínio Exemplo 1</option>
+                  <option value="cond2">Condomínio Exemplo 2</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-text-primary mb-1">Bloco</label>
+                <select name="bloco" value={unidade.bloco} onChange={(e) => handleUnidadeChange(index, e)}>
+                  <option value="">Selecione</option>
+                  <option value="A">Bloco A</option>
+                  <option value="B">Bloco B</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-text-primary mb-1">Andar</label>
+                <select name="andar" value={unidade.andar} onChange={(e) => handleUnidadeChange(index, e)}>
+                  <option value="">Selecione</option>
+                  {[...Array(20)].map((_, i) => (
+                    <option key={i} value={i + 1}>{i + 1}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-text-primary mb-1">Número</label>
+                <select name="numero" value={unidade.numero} onChange={(e) => handleUnidadeChange(index, e)}>
+                  <option value="">Selecione</option>
+                  {[...Array(50)].map((_, i) => (
+                    <option key={i} value={i + 1}>{i + 1}</option>
+                  ))}
+                </select>
+              </div>
             </div>
+          ))}
 
-            <div className="md:col-span-1">
-              <label htmlFor="numeroProcesso" className="block text-sm font-medium text-text-primary mb-1">
-                Número do Processo
-              </label>
-              <input
-                type="text"
-                id="numeroProcesso"
-                name="numeroProcesso"
-                value={formData.numeroProcesso}
-                onChange={handleChange}
-                placeholder="Digite o número do processo"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
-            </div>
-
-            <div className="md:col-span-1">
-              <label htmlFor="tribunal" className="block text-sm font-medium text-text-primary mb-1">
-                Tribunal
-              </label>
-              <input
-                type="text"
-                id="tribunal"
-                name="tribunal"
-                value={formData.tribunal}
-                onChange={handleChange}
-                placeholder="Digite o número do tribunal"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
-            </div>
-
-            <div className="md:col-span-1">
-              <label htmlFor="varaJuizo" className="block text-sm font-medium text-text-primary mb-1">
-                Vara ou Juízo
-              </label>
-              <input
-                type="text"
-                id="varaJuizo"
-                name="varaJuizo"
-                value={formData.varaJuizo}
-                onChange={handleChange}
-                placeholder="Digite a Vara ou Juízo"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
-            </div>
-
-            <div className="md:col-span-1">
-              <label htmlFor="forum" className="block text-sm font-medium text-text-primary mb-1">
-                Fórum
-              </label>
-              <input
-                type="text"
-                id="forum"
-                name="forum"
-                value={formData.forum}
-                onChange={handleChange}
-                placeholder="Digite um fórum"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
-            </div>
-
-            <div className="md:col-span-1">
-              <label htmlFor="linkTribunal" className="block text-sm font-medium text-text-primary mb-1">
-                Link do tribunal
-              </label>
-              <input
-                type="url"
-                id="linkTribunal"
-                name="linkTribunal"
-                value={formData.linkTribunal}
-                onChange={handleChange}
-                placeholder="Cole aqui o link do tribunal"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
-            </div>
-
-            <div className="md:col-span-1">
-              <label htmlFor="valorCausa" className="block text-sm font-medium text-text-primary mb-1">
-                Valor da causa
-              </label>
-              <input
-                type="text"
-                id="valorCausa"
-                name="valorCausa"
-                value={formData.valorCausa}
-                onChange={handleChange}
-                placeholder="R$ 0,00"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
-            </div>
-
-            <div className="md:col-span-1">
-              <label htmlFor="valorCondenacao" className="block text-sm font-medium text-text-primary mb-1">
-                Valor da Condenação
-              </label>
-              <input
-                type="text"
-                id="valorCondenacao"
-                name="valorCondenacao"
-                value={formData.valorCondenacao}
-                onChange={handleChange}
-                placeholder="R$ 0,00"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
-            </div>
-
-            <div className="md:col-span-1">
-              <label htmlFor="dataDistribuicao" className="block text-sm font-medium text-text-primary mb-1">
-                Data de distribuição
-              </label>
-              <input
-                type="date"
-                id="dataDistribuicao"
-                name="dataDistribuicao"
-                value={formData.dataDistribuicao}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
-            </div>
-          </div>
+          <button type="button" onClick={addUnidade} className="text-primary font-medium flex items-center gap-1">
+            + Adicionar
+          </button>
         </div>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <div className="flex justify-center">
-          <button
-            type="submit"
-            className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-primary-dark transition-colors"
-          >
+          <button type="submit" className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-primary-dark transition-colors">
             Cadastrar
           </button>
         </div>
@@ -304,4 +173,4 @@ const CadastroAcoesLegais: React.FC = () => {
   );
 };
 
-export default CadastroAcoesLegais;
+export default CadastroCondominos;
