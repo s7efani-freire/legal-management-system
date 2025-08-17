@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Scale } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -21,23 +22,24 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="bg-background-white rounded-lg shadow-lg p-8">
+    <div className="w-full">
       {/* Logo */}
-      <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Scale className="w-8 h-8 text-primary" />
-        </div>
-        <div className="text-primary">
-          <h1 className="text-lg font-bold">DIAS & NUNES</h1>
-          <p className="text-xs text-primary/70">ADVOCACIA & CONSULTORIA JURÍDICA</p>
-        </div>
+      <div className="flex justify-center mb-6 md:mb-8">
+        <img 
+          src="/logo-square-blue.png" 
+          alt="Dias & Nunes" 
+          className="h-12 w-12 md:h-16 md:w-16"
+        />
       </div>
 
-      <h2 className="text-2xl font-semibold text-text-primary text-center mb-6">Conecte-se</h2>
+      {/* Título usando cor primary.dark */}
+      <h1 className="text-2xl md:text-3xl font-bold text-primary-dark mb-6 md:mb-8 text-center">
+        Conecte-se
+      </h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-text-primary mb-1">
+          <label htmlFor="email" className="block text-sm md:text-base font-medium text-primary-dark mb-2">
             Email
           </label>
           <input
@@ -46,40 +48,52 @@ const Login: React.FC = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="email@diasenunes.com.br"
-            className="w-full px-3 py-2 border-b border-gray-300 focus:border-primary focus:outline-none bg-transparent"
+            placeholder="Digite seu email"
+            className="w-full px-4 py-2 md:py-3 border-b border-primary-dark focus:outline-none focus:border-primary-dark text-primary-dark text-sm md:text-base placeholder-primary-dark/70 placeholder:italic bg-transparent"
             required
           />
         </div>
 
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-text-primary mb-1">
+        <div className="relative">
+          <label htmlFor="password" className="block text-sm md:text-base font-medium text-primary-dark mb-2">
             Senha
           </label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="••••••••"
-            className="w-full px-3 py-2 border-b border-gray-300 focus:border-primary focus:outline-none bg-transparent"
+            placeholder="Digite sua senha"
+            className="w-full px-4 py-2 md:py-3 border-b border-primary-dark focus:outline-none focus:border-primary-dark text-primary-dark text-sm md:text-base placeholder-primary-dark/70 placeholder:italic bg-transparent pr-10"
             required
           />
+          <button
+            type="button"
+            className="absolute right-3 bottom-2 text-primary-dark"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary-dark transition-colors mt-6"
-        >
-          Acessar
-        </button>
+        <div className="pt-4 md:pt-6">
+          <button
+            type="submit"
+            className="w-full bg-primary-dark text-white py-2 md:py-3 rounded-md font-medium hover:bg-primary transition-colors text-sm md:text-base"
+          >
+            Acessar
+          </button>
+        </div>
       </form>
 
-      <div className="text-center mt-6">
-        <p className="text-sm text-text-primary">
+      <div className="text-center mt-4 md:mt-6">
+        <p className="text-xs md:text-sm text-primary-dark">
           Ainda não tem uma conta?{' '}
-          <Link to="/cadastro" className="text-primary hover:underline">
+          <Link 
+            to="/cadastro" 
+            className="text-primary-dark hover:underline font-medium"
+          >
             Cadastre-se
           </Link>
         </p>
