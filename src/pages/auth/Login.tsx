@@ -28,7 +28,7 @@ const Login: React.FC = () => {
         <img 
           src="/logo-square-blue.png" 
           alt="Dias & Nunes" 
-          className="h-12 w-12 md:h-16 md:w-16"
+          className="w-32 md:md:w-44"
         />
       </div>
 

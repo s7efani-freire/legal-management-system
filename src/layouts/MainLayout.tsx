@@ -1,20 +1,27 @@
-import React from 'react';
-import Sidebar from '../components/layout/Sidebar';
-import Header from '../components/layout/Header';
+import React, { useState } from "react";
+import Header from "../components/layout/Header";
+import Sidebar from "../components/layout/Sidebar";
 
-interface MainLayoutProps {
-  children: React.ReactNode;
-}
+const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
-    <div className="flex h-screen bg-background">
-      <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-y-auto p-6">
-          {children}
-        </main>
+    <div className="flex h-screen bg-gray-50">
+      {/* Overlay no mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+      {/* Conteúdo principal */}
+      <div className="flex flex-col flex-1">
+        <Header onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+        <main className="flex-1 overflow-y-auto p-4">{children}</main>
       </div>
     </div>
   );
