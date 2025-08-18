@@ -21,7 +21,13 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       {/* Conteúdo principal */}
       <div className="flex flex-col flex-1">
         <Header onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
-        <main className="flex-1 overflow-y-auto p-4">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 flex justify-center items-start">
+          <div className="w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-6xl">
+            {children}
+          </div>
+        </main>
+
+
       </div>
     </div>
   );
