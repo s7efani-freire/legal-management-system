@@ -62,10 +62,10 @@ const Condominos: React.FC = () => {
           <thead className="bg-background">
             <tr>
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Nome</th>
-              <th className="hidden md:table-cell px-4 py-3 text-left text-sm font-medium text-gray-700 bg-accent">CNPJ / CPF</th>
-              <th className="hidden lg:table-cell px-4 py-3 text-left text-sm font-medium text-gray-700 bg-accent">Telefone</th>
+              <th className="hidden md:table-cell px-4 py-3 text-left text-sm font-medium text-gray-700">CNPJ / CPF</th>
+              <th className="hidden lg:table-cell px-4 py-3 text-left text-sm font-medium text-gray-700">Telefone</th>
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Condomínio</th>
-              <th className="px-4 py-3 text-center text-sm font-medium text-gray-700 bg-accent">Ações</th>
+              <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">Ações</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
