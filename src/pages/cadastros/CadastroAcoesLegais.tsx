@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
 import PageContainer from '../../components/ui/PageContainer';
 
+// Definições de classe que você forneceu
+const inputClass =
+  'w-full border-0 border-b border-gray-400 focus:border-primary focus:ring-0 placeholder:italic placeholder:text-gray-400';
+
+const getSelectClass = (value: string) =>
+  `w-full appearance-none bg-transparent border-0 border-b border-gray-400 
+   focus:border-primary focus:ring-0
+   ${value ? "not-italic text-black" : "italic text-gray-400"}`;
+
+
 const CadastroAcoesLegais: React.FC = () => {
   const [formData, setFormData] = useState({
     titulo: '',
+    tipoAcao: '', // Adicionado para controlar o select
     descricao: '',
     advogadoResponsavel: '',
     honorario: '',
@@ -38,7 +49,7 @@ const CadastroAcoesLegais: React.FC = () => {
         {/* Ação Legal */}
         <div>
           <h3 className="text-lg font-medium text-text-secondary mb-4">Ação Legal</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             <div className="md:col-span-1">
               <label htmlFor="titulo" className="block text-sm font-medium text-text-primary mb-1">
                 Título
@@ -50,7 +61,7 @@ const CadastroAcoesLegais: React.FC = () => {
                 value={formData.titulo}
                 onChange={handleChange}
                 placeholder="Digite o título da ação"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className={inputClass}
               />
             </div>
 
@@ -61,9 +72,11 @@ const CadastroAcoesLegais: React.FC = () => {
               <select
                 id="tipoAcao"
                 name="tipoAcao"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                value={formData.tipoAcao}
+                onChange={handleChange}
+                className={getSelectClass(formData.tipoAcao)}
               >
-                <option value="">Selecione</option>
+                <option value="">Selecione o tipo</option>
                 <option value="cobranca">Cobrança</option>
                 <option value="despejo">Despejo</option>
                 <option value="revisional">Revisional</option>
@@ -81,7 +94,7 @@ const CadastroAcoesLegais: React.FC = () => {
                 onChange={handleChange}
                 placeholder="Descreva a ação"
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className={inputClass}
               />
             </div>
 
@@ -94,9 +107,9 @@ const CadastroAcoesLegais: React.FC = () => {
                 name="advogadoResponsavel"
                 value={formData.advogadoResponsavel}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className={getSelectClass(formData.advogadoResponsavel)}
               >
-                <option value="">Selecione</option>
+                <option value="">Selecione o advogado</option>
                 <option value="dr-dias">Dr. Dias</option>
                 <option value="dr-nunes">Dr. Nunes</option>
               </select>
@@ -113,7 +126,7 @@ const CadastroAcoesLegais: React.FC = () => {
                 value={formData.honorario}
                 onChange={handleChange}
                 placeholder="R$ 0,00"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className={inputClass}
               />
             </div>
 
@@ -126,7 +139,7 @@ const CadastroAcoesLegais: React.FC = () => {
                 name="condominio"
                 value={formData.condominio}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className={getSelectClass(formData.condominio)}
               >
                 <option value="">Selecione ou digite para pesquisar</option>
                 <option value="cond1">Condomínio Exemplo 1</option>
@@ -143,7 +156,7 @@ const CadastroAcoesLegais: React.FC = () => {
                 name="condominos"
                 value={formData.condominos}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className={getSelectClass(formData.condominos)}
               >
                 <option value="">Selecione ou digite para pesquisar</option>
                 <option value="cond1">João Silva</option>
@@ -156,7 +169,7 @@ const CadastroAcoesLegais: React.FC = () => {
         {/* Ação Judicial */}
         <div>
           <h3 className="text-lg font-medium text-text-secondary mb-4">Ação Judicial</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             <div className="md:col-span-1">
               <label htmlFor="instanciaJudicial" className="block text-sm font-medium text-text-primary mb-1">
                 Instância Judicial
@@ -167,8 +180,8 @@ const CadastroAcoesLegais: React.FC = () => {
                 name="instanciaJudicial"
                 value={formData.instanciaJudicial}
                 onChange={handleChange}
-                placeholder="Digite o título da ação"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                placeholder="Ex: Primeira Instância"
+                className={inputClass}
               />
             </div>
 
@@ -183,7 +196,7 @@ const CadastroAcoesLegais: React.FC = () => {
                 value={formData.numeroProcesso}
                 onChange={handleChange}
                 placeholder="Digite o número do processo"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className={inputClass}
               />
             </div>
 
@@ -197,8 +210,8 @@ const CadastroAcoesLegais: React.FC = () => {
                 name="tribunal"
                 value={formData.tribunal}
                 onChange={handleChange}
-                placeholder="Digite o número do tribunal"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                placeholder="Ex: TJBA"
+                className={inputClass}
               />
             </div>
 
@@ -212,8 +225,8 @@ const CadastroAcoesLegais: React.FC = () => {
                 name="varaJuizo"
                 value={formData.varaJuizo}
                 onChange={handleChange}
-                placeholder="Digite a Vara ou Juízo"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                placeholder="Ex: 1ª Vara Cível"
+                className={inputClass}
               />
             </div>
 
@@ -227,8 +240,8 @@ const CadastroAcoesLegais: React.FC = () => {
                 name="forum"
                 value={formData.forum}
                 onChange={handleChange}
-                placeholder="Digite um fórum"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                placeholder="Digite o fórum"
+                className={inputClass}
               />
             </div>
 
@@ -243,7 +256,7 @@ const CadastroAcoesLegais: React.FC = () => {
                 value={formData.linkTribunal}
                 onChange={handleChange}
                 placeholder="Cole aqui o link do tribunal"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className={inputClass}
               />
             </div>
 
@@ -258,7 +271,7 @@ const CadastroAcoesLegais: React.FC = () => {
                 value={formData.valorCausa}
                 onChange={handleChange}
                 placeholder="R$ 0,00"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className={inputClass}
               />
             </div>
 
@@ -273,7 +286,7 @@ const CadastroAcoesLegais: React.FC = () => {
                 value={formData.valorCondenacao}
                 onChange={handleChange}
                 placeholder="R$ 0,00"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className={inputClass}
               />
             </div>
 
@@ -287,14 +300,14 @@ const CadastroAcoesLegais: React.FC = () => {
                 name="dataDistribuicao"
                 value={formData.dataDistribuicao}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className={inputClass}
               />
             </div>
           </div>
         </div>
 
         {/* Submit Button */}
-        <div className="flex justify-center">
+        <div className="flex justify-center pt-4">
           <button
             type="submit"
             className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-primary-dark transition-colors"
