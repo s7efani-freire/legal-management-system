@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Bell, ChevronRight, Menu } from "lucide-react";
 
 interface HeaderProps {
-  onMenuClick?: () => void; // callback para abrir/fechar a sidebar no mobile
+  onMenuClick?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
