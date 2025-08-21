@@ -25,6 +25,7 @@ DIASENUNES/
     │   │   └── Sidebar.tsx
     │   └── ui/
     │       └── PageContainer.tsx
+            └── DetailsPopup.tsx
     ├── layouts/
     │   ├── AuthLayout.tsx
     │   ├── LoginLayout.tsx
@@ -40,6 +41,7 @@ DIASENUNES/
     │   ├── Condominios.tsx
     │   ├── Dashboard.tsx
     │   ├── Honorarios.tsx
+    │   ├── Notificacoes.tsx    
     │   ├── Profile.tsx
     │   └── Usuarios.tsx
     ├── routes/

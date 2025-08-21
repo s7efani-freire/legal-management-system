@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react"; // <-- Importar useEffect
+import { Link, useLocation } from 'react-router-dom'; // <-- Importar useLocation
 import PageContainer from "../components/ui/PageContainer";
 import { Plus, Info, Trash2 } from "lucide-react";
 import DetailsPopup from "../components/ui/DetailsPopup";
@@ -11,7 +11,6 @@ interface AcaoLegal {
   criadoEm: string;
   responsavel: string;
   tipo: 'Judicial' | 'Extra-Judicial';
- 
   numeroProcesso: string;
   descricao: string;
 }
@@ -25,11 +24,12 @@ const dados: AcaoLegal[] = [
 ];
 
 const AcoesLegais: React.FC = () => {
- 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedAcao, setSelectedAcao] = useState<AcaoLegal | null>(null);
+  
+  // Hook para acessar o 'state' da navegação
+  const location = useLocation();
 
- 
   const handleOpenPopup = (id: number) => {
     const acaoSelecionada = dados.find(item => item.id === id);
     if (acaoSelecionada) {
@@ -42,6 +42,18 @@ const AcoesLegais: React.FC = () => {
     setIsPopupOpen(false);
     setSelectedAcao(null);
   };
+  
+  // --- ADICIONADO: LÓGICA PARA ABRIR O POPUP AUTOMATICAMENTE ---
+  useEffect(() => {
+    const state = location.state as { openPopupWithId?: number };
+    const idToOpen = state?.openPopupWithId;
+
+    if (idToOpen) {
+      handleOpenPopup(idToOpen);
+      // Limpa o estado da navegação para não reabrir o popup
+      window.history.replaceState({}, document.title)
+    }
+  }, [location.state]);
 
   return (
     <div className="relative">
@@ -99,7 +111,6 @@ const AcoesLegais: React.FC = () => {
                   <td className="px-4 py-3 text-sm text-gray-700">{item.tipo}</td>
                   <td className="px-4 py-3 text-sm text-gray-700">
                     <div className="flex items-center justify-center space-x-3">
-                      {/* 4. ADICIONAR O ONCLICK PARA ABRIR O POPUP */}
                       <button 
                         onClick={() => handleOpenPopup(item.id)}
                         className="text-blue-500 hover:text-blue-700"
@@ -118,10 +129,10 @@ const AcoesLegais: React.FC = () => {
         </div>
       </PageContainer>
       
-      {/* 5. RENDERIZAR O POPUP */}
+      {/* RENDERIZAR O POPUP */}
       <DetailsPopup
         isOpen={isPopupOpen}
-        onClose={handleClosePopup}     
+        onClose={handleClosePopup}
         item={selectedAcao ? {
           id: selectedAcao.id.toString(),
           title: selectedAcao.acao,
