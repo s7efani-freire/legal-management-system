@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BarChart3, PieChart as PieIcon, Users, Building, UserCircle2, Clock } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
+import { Link } from 'react-router-dom'; // <-- Não se esqueça de importar o Link!
 
 // --- NOVOS IMPORTS PARA OS GRÁFICOS ---
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -170,9 +171,12 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
+
       {/* Stats Cards (Nosso estilo base) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-accent">
+        
+        {/* Card Honorários */}
+        <Link to="/honorarios" className="block bg-white p-6 rounded-lg shadow-sm border border-accent hover:shadow-md hover:scale-[1.02] transition-transform duration-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-text-primary">Honorários</p>
@@ -182,9 +186,10 @@ const Dashboard: React.FC = () => {
               <BarChart3 className="w-6 h-6 text-secondary" />
             </div>
           </div>
-        </div>
+        </Link>
         
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-accent">
+        {/* Card Demandas (Ações Legais) */}
+        <Link to="/acoes-legais" className="block bg-white p-6 rounded-lg shadow-sm border border-accent hover:shadow-md hover:scale-[1.02] transition-transform duration-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-text-primary">Demandas</p>
@@ -194,8 +199,10 @@ const Dashboard: React.FC = () => {
               <PieIcon className="w-6 h-6 text-primary" />
             </div>
           </div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-accent">
+        </Link>
+        
+        {/* Card Condomínios */}
+        <Link to="/condominios" className="block bg-white p-6 rounded-lg shadow-sm border border-accent hover:shadow-md hover:scale-[1.02] transition-transform duration-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-text-primary">Condomínios</p>
@@ -205,8 +212,10 @@ const Dashboard: React.FC = () => {
               <Building className="w-6 h-6 text-primary" />
             </div>
           </div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-accent">
+        </Link>
+        
+        {/* Card Condôminos */}
+        <Link to="/condominos" className="block bg-white p-6 rounded-lg shadow-sm border border-accent hover:shadow-md hover:scale-[1.02] transition-transform duration-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-text-primary">Condôminos</p>
@@ -216,7 +225,8 @@ const Dashboard: React.FC = () => {
               <Users className="w-6 h-6 text-secondary" />
             </div>
           </div>
-        </div>
+        </Link>
+        
       </div>
 
       {/* --- SEÇÃO DE GRÁFICOS ATUALIZADA --- */}

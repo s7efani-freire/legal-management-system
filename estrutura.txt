@@ -1,0 +1,51 @@
+DIASENUNES/
+├── public/
+│   ├── arrow-down.png
+│   ├── bell.png
+│   ├── close-up-da-estatua.jpg
+│   ├── down.png
+│   ├── info.png
+│   ├── logo-blue.png
+│   ├── logo-square-blue.png
+│   ├── logo-square-white.png
+│   ├── logo-white.png
+│   ├── man.png
+│   ├── pie-chart.png
+│   ├── plus.png
+│   ├── trash-bin.png
+│   ├── upload.png
+│   ├── user.png
+│   ├── woman (1).png
+│   ├── woman (2).png
+│   └── woman.png
+└── src/
+    ├── components/
+    │   ├── layout/
+    │   │   ├── Header.tsx
+    │   │   └── Sidebar.tsx
+    │   └── ui/
+    │       └── PageContainer.tsx
+    ├── layouts/
+    │   ├── AuthLayout.tsx
+    │   ├── LoginLayout.tsx
+    │   └── MainLayout.tsx
+    ├── pages/
+    │   ├── auth/
+    │   │   ├── Cadastro.tsx
+    │   │   └── Login.tsx
+    │   ├── cadastros/
+    │   │   ├── CadastroAcoesLegais.tsx
+    │   │   └── CadastroCondominios.tsx
+    │   ├── AcoesLegais.tsx
+    │   ├── Condominios.tsx
+    │   ├── Dashboard.tsx
+    │   ├── Honorarios.tsx
+    │   ├── Profile.tsx
+    │   └── Usuarios.tsx
+    ├── routes/
+    │   └── AppRoutes.tsx
+    ├── services/
+    ├── utils/
+    ├── App.tsx
+    ├── index.css
+    └── main.tsx
