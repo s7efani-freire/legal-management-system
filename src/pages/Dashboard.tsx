@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
-// import PageContainer from '../components/ui/PageContainer';
-import { BarChart3, PieChart, Users, Building, UserCircle2, Clock } from 'lucide-react';
+import { BarChart3, PieChart as PieIcon, Users, Building, UserCircle2, Clock } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
+
+// --- NOVOS IMPORTS PARA OS GRÁFICOS ---
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+
+// --- REGISTRO DOS ELEMENTOS DO CHART.JS (NECESSÁRIO) ---
+ChartJS.register(ArcElement, Tooltip, Legend);
+
 
 // --- TIPOS E INTERFACES (Para o Kanban) ---
 interface Task {
@@ -12,18 +19,18 @@ interface Task {
   prazo: string;
   assignee: { name: string; avatarUrl?: string };
 }
-
+// ... (outras interfaces do Kanban) ...
 interface Column {
   id: string;
   title: string;
   taskIds: string[];
 }
-
 interface BoardData {
   tasks: Record<string, Task>;
   columns: Record<string, Column>;
   columnOrder: string[];
 }
+
 
 // --- DADOS INICIAIS DO KANBAN ---
 const initialBoardData: BoardData = {
@@ -42,40 +49,92 @@ const initialBoardData: BoardData = {
 };
 
 
+// --- DADOS FICTÍCIOS PARA OS GRÁFICOS ---
+// Usando as cores do seu tema do tailwind.config.js
+const honorariosChartData = {
+  labels: ['Pagos', 'Pendentes', 'Atrasados'],
+  datasets: [{
+    label: 'R$',
+    data: [28320, 12500, 4500],
+    backgroundColor: ['#1D3741', '#BD8F9E', '#D1E3E9'],
+    borderColor: '#FFFFFF',
+    borderWidth: 2,
+  }],
+};
+
+const demandasChartData = {
+  labels: ['Judicial', 'Extrajudicial'],
+  datasets: [{
+    label: 'Quantidade',
+    data: [82, 45],
+    backgroundColor: ['#1D3741', '#BD8F9E'],
+    borderColor: '#FFFFFF',
+    borderWidth: 2,
+  }],
+};
+
+const tarefasChartData = {
+  labels: ['Dr. Dias', 'Dr. Nunes', 'Outros'],
+  datasets: [{
+    label: 'Tarefas',
+    data: [15, 22, 7],
+    backgroundColor: ['#1D3741', '#BD8F9E', '#D1E3E9'],
+    borderColor: '#FFFFFF',
+    borderWidth: 2,
+  }],
+};
+
+const chartOptions = {
+    responsive: true,
+    plugins: {
+        legend: {
+            position: 'bottom' as const,
+            labels: {
+                boxWidth: 12,
+                padding: 20,
+                font: {
+                    family: 'Inter, sans-serif'
+                }
+            }
+        }
+    }
+}
+
+
 // --- COMPONENTE DO CARD DE TAREFA (Estilo Uniformizado) ---
 const TaskCard: React.FC<{ task: Task; index: number }> = ({ task, index }) => {
-  return (
-    <Draggable draggableId={task.id} index={index}>
-      {(provided, snapshot) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          // Estilo atualizado: borda accent, padding p-4 para não ficar muito grande
-          className={`p-4 bg-white rounded-lg border border-accent shadow-sm mb-3 ${snapshot.isDragging ? 'shadow-lg' : ''}`}
-        >
-          <span className={`text-xs font-semibold px-2 py-1 rounded-full ${ task.type === 'Ação Judicial' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800' }`}>
-            {task.type}
-          </span>
-          <h4 className="font-semibold text-text-secondary mt-2">{task.title}</h4>
-          <div className="flex items-center text-sm text-gray-500 mt-2">
-            <Building className="w-4 h-4 mr-2" />
-            <span>{task.condominio}</span>
-          </div>
-          <div className="flex items-center text-sm text-gray-500 mt-1">
-            <Clock className="w-4 h-4 mr-2" />
-            <span>Prazo: {task.prazo}</span>
-          </div>
-          <div className="mt-4 pt-3 border-t border-gray-200 flex items-center justify-end">
-             <div className="flex items-center text-xs text-gray-500">
-                <span>{task.assignee.name}</span>
-                <UserCircle2 className="w-6 h-6 ml-2 text-gray-400" />
+    // Código do TaskCard permanece o mesmo
+    return (
+        <Draggable draggableId={task.id} index={index}>
+            {(provided, snapshot) => (
+            <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                className={`p-4 bg-white rounded-lg border border-accent shadow-sm mb-3 ${snapshot.isDragging ? 'shadow-lg' : ''}`}
+            >
+                <span className={`text-xs font-semibold px-2 py-1 rounded-full ${ task.type === 'Ação Judicial' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800' }`}>
+                {task.type}
+                </span>
+                <h4 className="font-semibold text-text-secondary mt-2">{task.title}</h4>
+                <div className="flex items-center text-sm text-gray-500 mt-2">
+                <Building className="w-4 h-4 mr-2" />
+                <span>{task.condominio}</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-500 mt-1">
+                <Clock className="w-4 h-4 mr-2" />
+                <span>Prazo: {task.prazo}</span>
+                </div>
+                <div className="mt-4 pt-3 border-t border-gray-200 flex items-center justify-end">
+                    <div className="flex items-center text-xs text-gray-500">
+                    <span>{task.assignee.name}</span>
+                    <UserCircle2 className="w-6 h-6 ml-2 text-gray-400" />
+                </div>
+                </div>
             </div>
-          </div>
-        </div>
-      )}
-    </Draggable>
-  );
+            )}
+        </Draggable>
+    );
 };
 
 
@@ -124,7 +183,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
-        {/* ... os outros 3 Stats Cards ... */}
+        
         <div className="bg-white p-6 rounded-lg shadow-sm border border-accent">
           <div className="flex items-center justify-between">
             <div>
@@ -132,7 +191,7 @@ const Dashboard: React.FC = () => {
               <p className="text-2xl font-bold text-text-secondary">127</p>
             </div>
             <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-              <PieChart className="w-6 h-6 text-primary" />
+              <PieIcon className="w-6 h-6 text-primary" />
             </div>
           </div>
         </div>
@@ -160,58 +219,56 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Charts Placeholder (Estilo Uniformizado) */}
+      {/* --- SEÇÃO DE GRÁFICOS ATUALIZADA --- */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-accent text-center">
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-accent">
           <h3 className="font-semibold text-text-secondary mb-4 text-left">Honorários (R$)</h3>
-          <div className="w-32 h-32 mx-auto bg-accent/30 rounded-full flex items-center justify-center">
-            <PieChart className="w-12 h-12 text-secondary" />
+          <div className='h-64 flex justify-center items-center'>
+            <Doughnut data={honorariosChartData} options={chartOptions}/>
           </div>
-          <p className="text-sm text-text-primary mt-4">Gráfico de honorários por status</p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-accent text-center">
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-accent">
           <h3 className="font-semibold text-text-secondary mb-4 text-left">Demandas (quantidade)</h3>
-          <div className="w-32 h-32 mx-auto bg-accent/30 rounded-full flex items-center justify-center">
-            <PieChart className="w-12 h-12 text-primary" />
+           <div className='h-64 flex justify-center items-center'>
+            <Doughnut data={demandasChartData} options={chartOptions}/>
           </div>
-          <p className="text-sm text-text-primary mt-4">Gráfico de demandas ativas</p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-accent text-center">
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-accent">
           <h3 className="font-semibold text-text-secondary mb-4 text-left">Distribuição de tarefas</h3>
-          <div className="w-32 h-32 mx-auto bg-accent/30 rounded-full flex items-center justify-center">
-            <PieChart className="w-12 h-12 text-secondary" />
+           <div className='h-64 flex justify-center items-center'>
+            <Doughnut data={tarefasChartData} options={chartOptions}/>
           </div>
-          <p className="text-sm text-text-primary mt-4">Distribuição por usuário</p>
         </div>
       </div>
       
       {/* Kanban Board (Estilo Uniformizado) */}
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-          {board.columnOrder.map(columnId => {
-            const column = board.columns[columnId];
-            const tasks = column.taskIds.map(taskId => board.tasks[taskId]);
+            {/* O código do Kanban permanece o mesmo */}
+            {board.columnOrder.map(columnId => {
+                const column = board.columns[columnId];
+                const tasks = column.taskIds.map(taskId => board.tasks[taskId]);
 
-            return (
-              <Droppable droppableId={column.id} key={column.id}>
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className="bg-white p-6 rounded-lg shadow-sm border border-accent min-h-[24rem]"
-                  >
-                    <h3 className="font-semibold text-text-secondary mb-4">{column.title}</h3>
-                    {tasks.map((task, index) => (
-                      <TaskCard key={task.id} task={task} index={index} />
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            );
-          })}
+                return (
+                <Droppable droppableId={column.id} key={column.id}>
+                    {(provided) => (
+                    <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className="bg-white p-6 rounded-lg shadow-sm border border-accent min-h-[24rem]"
+                    >
+                        <h3 className="font-semibold text-text-secondary mb-4">{column.title}</h3>
+                        {tasks.map((task, index) => (
+                        <TaskCard key={task.id} task={task} index={index} />
+                        ))}
+                        {provided.placeholder}
+                    </div>
+                    )}
+                </Droppable>
+                );
+            })}
         </div>
       </DragDropContext>
     </div>
