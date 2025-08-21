@@ -11,6 +11,7 @@ import Honorarios from '../pages/Honorarios';
 import Usuarios from '../pages/Usuarios';
 import Condominios from '../pages/Condominios';
 import Condominos from '../pages/Condominos';
+import Profile from '../pages/Profile';
 import Login from '../pages/auth/Login';
 import Cadastro from '../pages/auth/Cadastro';
 
@@ -34,6 +35,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/usuarios" element={<MainLayout><Usuarios /></MainLayout>} />
         <Route path="/condominios" element={<MainLayout><Condominios /></MainLayout>} />
         <Route path="/condominos" element={<MainLayout><Condominos /></MainLayout>} />
+        <Route path="/perfil" element={<MainLayout><Profile /></MainLayout>} />
 
         {/* Rotas de cadastros */}
         <Route path="/cadastros/condominios" element={<MainLayout><CadastroCondominios /></MainLayout>} />
