@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Bell, ChevronRight, Menu } from "lucide-react";
 
 interface HeaderProps {
@@ -17,6 +17,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
       "/usuarios": "Usuários",
       "/condominios": "Condomínios",
       "/condominos": "Condôminos",
+      "/perfil": "Meu Perfil", // <-- Título da nova página adicionado aqui
       "/cadastros/condominios": "Cadastro de Condomínios",
       "/cadastros/condominos": "Cadastro de Condôminos",
       "/cadastros/acoes-legais": "Cadastro de Ações Legais",
@@ -53,15 +54,20 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
 
-          {/* Usuário */}
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-medium">SS</span>
-            </div>
+          {/* Usuário com link para o perfil */}
+          <Link
+            to="/perfil"
+            className="flex items-center space-x-3 cursor-pointer p-1 rounded-lg hover:bg-gray-100"
+          >
+            <img
+              src="/user.png"
+              alt="Foto do usuário"
+              className="w-8 h-8 rounded-full object-cover"
+            />
             <span className="text-text-primary font-medium hidden sm:block">
-              Stefani Soares
+              Stéfani Freire
             </span>
-          </div>
+          </Link>
         </div>
       </div>
     </header>
