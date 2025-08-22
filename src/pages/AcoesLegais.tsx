@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react"; // <-- Importar useEffect
-import { Link, useLocation } from 'react-router-dom'; // <-- Importar useLocation
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from 'react-router-dom';
 import PageContainer from "../components/ui/PageContainer";
-import { Plus, Info, Trash2 } from "lucide-react";
-import DetailsPopup from "../components/ui/DetailsPopup";
+import { Plus, Info, Trash2, Clock, FileText, UserCircle2 } from "lucide-react"; // Ícones para os detalhes
+import DetailsPopup, { DetailItem } from "../components/ui/DetailsPopup"; // Importar a interface DetailItem
 
 // --- DEFINIÇÃO DE TIPO E DADOS MOCKADOS ---
 interface AcaoLegal {
@@ -25,33 +25,42 @@ const dados: AcaoLegal[] = [
 
 const AcoesLegais: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [selectedAcao, setSelectedAcao] = useState<AcaoLegal | null>(null);
+  // --- ESTADO CORRIGIDO ---
+  const [selectedDetails, setSelectedDetails] = useState<DetailItem[]>([]);
+  const [popupTitle, setPopupTitle] = useState('');
   
-  // Hook para acessar o 'state' da navegação
   const location = useLocation();
 
   const handleOpenPopup = (id: number) => {
-    const acaoSelecionada = dados.find(item => item.id === id);
-    if (acaoSelecionada) {
-      setSelectedAcao(acaoSelecionada);
+    const acao = dados.find(item => item.id === id);
+    if (acao) {
+      // --- LÓGICA CORRIGIDA ---
+      // Monta o título e a lista de detalhes para o popup genérico
+      setPopupTitle(acao.acao);
+      const detailsList: DetailItem[] = [
+        { icon: <FileText />, label: 'Tipo de Ação', value: acao.tipo },
+        { icon: <UserCircle2 />, label: 'Responsável', value: acao.responsavel },
+        { icon: <FileText />, label: 'Nº do Processo', value: acao.numeroProcesso },
+        { icon: <Clock />, label: 'Criado em', value: acao.criadoEm },
+        { label: 'Descrição', value: acao.descricao, isFullWidth: true }, // Detalhe de largura total
+      ];
+      setSelectedDetails(detailsList);
       setIsPopupOpen(true);
     }
   };
 
   const handleClosePopup = () => {
     setIsPopupOpen(false);
-    setSelectedAcao(null);
+    setSelectedDetails([]);
+    setPopupTitle('');
   };
   
-  // --- ADICIONADO: LÓGICA PARA ABRIR O POPUP AUTOMATICAMENTE ---
   useEffect(() => {
     const state = location.state as { openPopupWithId?: number };
     const idToOpen = state?.openPopupWithId;
-
     if (idToOpen) {
       handleOpenPopup(idToOpen);
-      // Limpa o estado da navegação para não reabrir o popup
-      window.history.replaceState({}, document.title)
+      window.history.replaceState({}, document.title);
     }
   }, [location.state]);
 
@@ -69,7 +78,7 @@ const AcoesLegais: React.FC = () => {
           </Link>
         </div>
 
-        {/* Barra de filtros responsiva com Grid */}
+        {/* Barra de filtros */}
         <div className="bg-gray-100 p-4 rounded-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4 items-center mb-6">
           <input type="text" placeholder="Condomínio" className="w-full px-3 py-2 border border-accent rounded-lg text-sm italic focus:ring-2 focus:ring-primary/20" />
           <input type="text" placeholder="Condômino" className="w-full px-3 py-2 border border-accent rounded-lg text-sm italic focus:ring-2 focus:ring-primary/20" />
@@ -129,18 +138,12 @@ const AcoesLegais: React.FC = () => {
         </div>
       </PageContainer>
       
-      {/* RENDERIZAR O POPUP */}
+      {/* --- CHAMADA DO POPUP --- */}
       <DetailsPopup
         isOpen={isPopupOpen}
         onClose={handleClosePopup}
-        item={selectedAcao ? {
-          id: selectedAcao.id.toString(),
-          title: selectedAcao.acao,
-          type: selectedAcao.tipo,
-          assignee: { name: selectedAcao.responsavel },
-          numeroProcesso: selectedAcao.numeroProcesso,
-          descricao: selectedAcao.descricao,
-        } : null}
+        title={popupTitle}
+        details={selectedDetails}
       />
     </div>
   );
