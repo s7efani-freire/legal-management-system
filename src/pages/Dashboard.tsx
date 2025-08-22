@@ -46,7 +46,7 @@ const initialBoardData: BoardData = {
     columnOrder: ['column-1', 'column-2', 'column-3'],
 };
 
-// --- DADOS E OPÇÕES DOS GRÁFICOS (sem alteração) ---
+// --- DADOS E OPÇÕES DOS GRÁFICOS  ---
 const honorariosChartData = {
     labels: ['Pagos', 'Pendentes', 'Atrasados'], datasets: [{ label: 'R$', data: [28320, 12500, 4500], backgroundColor: ['#1D3741', '#BD8F9E', '#D1E3E9'], borderColor: '#FFFFFF', borderWidth: 2, }],
 };
@@ -61,7 +61,7 @@ const chartOptions = {
 };
 
 
-// --- COMPONENTE DO CARD DE TAREFA (sem alteração) ---
+// --- COMPONENTE DO CARD DE TAREFA  ---
 const TaskCard: React.FC<{ task: Task; index: number; onCardClick: (taskId: string) => void }> = ({ task, index, onCardClick }) => {
     return (
         <Draggable draggableId={task.id} index={index}>
@@ -79,21 +79,16 @@ const TaskCard: React.FC<{ task: Task; index: number; onCardClick: (taskId: stri
       );
 };
 
-// --- COMPONENTE PRINCIPAL DO DASHBOARD ---
 const Dashboard: React.FC = () => {
   const [board, setBoard] = useState<BoardData>(initialBoardData);
-  
-  // --- 2. ESTADO CORRIGIDO PARA O POPUP GENÉRICO ---
+
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<DetailItem[]>([]);
   const [popupTitle, setPopupTitle] = useState('');
-
-  // --- 3. FUNÇÕES CORRIGIDAS ---
   const handleOpenPopup = (taskId: string) => {
     const task = board.tasks[taskId];
     if (task) {
       setPopupTitle(task.title);
-      // "Traduz" os dados da tarefa para o formato genérico de detalhes
       const detailsList: DetailItem[] = [
         { icon: <FileText />, label: 'Tipo', value: task.type },
         { icon: <Building />, label: 'Condomínio', value: task.condominio },
@@ -138,7 +133,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="relative">
       <div className="space-y-6">
-        {/* Stats Cards com Links (sem alteração) */}
+        {/* Stats Cards com Links  */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Link to="/honorarios" className="block bg-white p-6 rounded-lg shadow-sm border border-accent hover:shadow-md hover:scale-[1.02] transition-transform duration-200"><div className="flex items-center justify-between"><div><p className="text-sm text-text-primary">Honorários</p><p className="text-2xl font-bold text-text-secondary">R$ 45.320</p></div><div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center"><BarChart3 className="w-6 h-6 text-secondary" /></div></div></Link>
             <Link to="/acoes-legais" className="block bg-white p-6 rounded-lg shadow-sm border border-accent hover:shadow-md hover:scale-[1.02] transition-transform duration-200"><div className="flex items-center justify-between"><div><p className="text-sm text-text-primary">Demandas</p><p className="text-2xl font-bold text-text-secondary">127</p></div><div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center"><PieIcon className="w-6 h-6 text-primary" /></div></div></Link>
@@ -146,14 +141,14 @@ const Dashboard: React.FC = () => {
             <Link to="/condominos" className="block bg-white p-6 rounded-lg shadow-sm border border-accent hover:shadow-md hover:scale-[1.02] transition-transform duration-200"><div className="flex items-center justify-between"><div><p className="text-sm text-text-primary">Condôminos</p><p className="text-2xl font-bold text-text-secondary">892</p></div><div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center"><Users className="w-6 h-6 text-secondary" /></div></div></Link>
         </div>
 
-        {/* Seção de Gráficos (sem alteração) */}
+        {/* Seção de Gráficos  */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-sm border border-accent"><h3 className="font-semibold text-text-secondary mb-4 text-left">Honorários (R$)</h3><div className='h-64 flex justify-center items-center'><Doughnut data={honorariosChartData} options={chartOptions}/></div></div>
             <div className="bg-white p-6 rounded-lg shadow-sm border border-accent"><h3 className="font-semibold text-text-secondary mb-4 text-left">Demandas (quantidade)</h3><div className='h-64 flex justify-center items-center'><Doughnut data={demandasChartData} options={chartOptions}/></div></div>
             <div className="bg-white p-6 rounded-lg shadow-sm border border-accent"><h3 className="font-semibold text-text-secondary mb-4 text-left">Distribuição de tarefas</h3><div className='h-64 flex justify-center items-center'><Doughnut data={tarefasChartData} options={chartOptions}/></div></div>
         </div>
         
-        {/* Kanban Board (sem alteração na estrutura, apenas na função que o TaskCard chama) */}
+        {/* Kanban Board */}
         <DragDropContext onDragEnd={onDragEnd}>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
             {board.columnOrder.map(columnId => {
@@ -176,8 +171,6 @@ const Dashboard: React.FC = () => {
             </div>
         </DragDropContext>
       </div>
-
-      {/* --- 4. CHAMADA CORRIGIDA DO POPUP --- */}
       <DetailsPopup
         isOpen={isPopupOpen}
         onClose={handleClosePopup}

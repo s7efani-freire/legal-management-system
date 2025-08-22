@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import PageContainer from '../components/ui/PageContainer';
 import { Info, Trash2, Plus, Building, Mail, Phone, MapPin, FileText, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import DetailsPopup, { DetailItem } from '../components/ui/DetailsPopup'; // 1. IMPORTAR O POPUP E A INTERFACE
+import DetailsPopup, { DetailItem } from '../components/ui/DetailsPopup'; 
 
-// --- DEFINIÇÃO DE TIPO E DADOS MOCKADOS (MAIS COMPLETOS) ---
+
 interface Condominio {
     id: number;
     legal_name: string;
@@ -27,20 +27,20 @@ const condominiosData: Condominio[] = [
 ];
 
 
-// --- COMPONENTE PRINCIPAL DA PÁGINA ---
+
 const Condominios: React.FC = () => {
-  // 2. ESTADO PARA CONTROLAR O POPUP
+  
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<DetailItem[]>([]);
   const [popupTitle, setPopupTitle] = useState('');
 
-  // 3. FUNÇÕES PARA ABRIR E FECHAR O POPUP
+  
   const handleOpenPopup = (id: number) => {
     const condominio = condominiosData.find(item => item.id === id);
     if (condominio) {
       setPopupTitle(condominio.legal_name);
 
-      // "Traduz" os dados do condomínio para o formato genérico do popup
+      
       const detailsList: DetailItem[] = [
         { icon: <Building />, label: 'Nome Fantasia', value: condominio.trade_name },
         { icon: <FileText />, label: 'CNPJ', value: condominio.cnpj },

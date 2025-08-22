@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
+import axios from 'axios'; 
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +9,9 @@ const Login: React.FC = () => {
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -16,9 +20,32 @@ const Login: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login attempt:', formData);
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.post(
+        'http://localhost/diasenunes-api/api/auth/login.php',
+        formData
+      );
+      
+      console.log('Login bem-sucedido:', response.data);
+      setIsLoading(false);
+
+      navigate('/');
+
+    } catch (err: any) {
+      
+      console.error('Erro no login:', err);
+      if (axios.isAxiosError(err) && err.response) {
+        setError(err.response.data.message || 'Credenciais inválidas.');
+      } else {
+        setError('Não foi possível conectar ao servidor. Tente novamente.');
+      }
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -28,7 +55,7 @@ const Login: React.FC = () => {
         <img 
           src="/logo-square-blue.png" 
           alt="Dias & Nunes" 
-          className="w-32 md:md:w-44"
+          className="w-32 md:w-44"
         />
       </div>
 
@@ -76,13 +103,17 @@ const Login: React.FC = () => {
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
+        
+        {/* Mensagem de erro */}
+        {error && <div className="text-center text-red-600 bg-red-100 p-3 rounded-md">{error}</div>}
 
         <div className="pt-4 md:pt-6">
           <button
             type="submit"
-            className="w-full bg-primary-dark text-white py-2 md:py-3 rounded-md font-medium hover:bg-primary transition-colors text-sm md:text-base"
+            className="w-full bg-primary-dark text-white py-2 md:py-3 rounded-md font-medium hover:bg-primary transition-colors text-sm md:text-base disabled:bg-gray-400"
+            disabled={isLoading}
           >
-            Acessar
+            {isLoading ? 'Conectando...' : 'Acessar'}
           </button>
         </div>
       </form>

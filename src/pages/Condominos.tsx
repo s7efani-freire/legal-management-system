@@ -4,7 +4,6 @@ import { Info, Trash2, Plus, User, Mail, Phone, Building, FileText } from 'lucid
 import { Link } from 'react-router-dom';
 import DetailsPopup, { DetailItem } from '../components/ui/DetailsPopup';
 
-// --- DEFINIÇÃO DE TIPOS E DADOS MOCKADOS ---
 interface Dwelling {
   unit_number: string;
   building_block: string;
@@ -17,7 +16,7 @@ interface Condomino {
   document_number: string;
   email: string;
   phone_number: string;
-  dwellings: Dwelling[]; // <-- NOVO: Lista de unidades
+  dwellings: Dwelling[];
 }
 
 const condominosData: Condomino[] = [
@@ -49,16 +48,16 @@ const Condominos: React.FC = () => {
     if (condomino) {
       setPopupTitle(condomino.name);
 
-      // Mapeia os dados do condômino para o formato genérico
+    
       const detailsList: DetailItem[] = [
         { icon: <FileText />, label: 'Documento', value: condomino.document_number },
         { icon: <Mail />, label: 'Email', value: condomino.email },
         { icon: <Phone />, label: 'Telefone', value: condomino.phone_number },
       ];
 
-      // Se houver unidades, adicione-as como um item de detalhes extra
+    
       if (condomino.dwellings.length > 0) {
-        // Formata a lista de unidades em uma string com quebras de linha
+      
         const unitsString = condomino.dwellings.map(d => 
             `${d.condominium}, Bloco ${d.building_block} - Unidade ${d.unit_number}`
         ).join('\n');
