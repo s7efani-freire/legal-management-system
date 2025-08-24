@@ -23,9 +23,12 @@ DIASENUNES/
     │   ├── layout/
     │   │   ├── Header.tsx
     │   │   └── Sidebar.tsx
+    │   │   └── ProtectedRoute.tsx
     │   └── ui/
     │       └── PageContainer.tsx
             └── DetailsPopup.tsx
+    ├── context/
+    │   ├── AuthContext.tsx   
     ├── layouts/
     │   ├── AuthLayout.tsx
     │   ├── LoginLayout.tsx

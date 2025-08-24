@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
-import axios from 'axios'; 
+import axios from 'axios';
+import { useAuth } from '../../context/AuthContext'; // 1. IMPORTAR O HOOK useAuth
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth(); // 2. PEGAR A FUNÇÃO 'login' DO CONTEXTO
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -27,24 +29,28 @@ const Login: React.FC = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost/diasenunes-api/api/auth/login.php',
+        'http://localhost/diasenunes-api/api/auth/login.php', // Verifique se a porta está correta
         formData
       );
       
-      console.log('Login bem-sucedido:', response.data);
-      setIsLoading(false);
+      // 3. CHAMAR A FUNÇÃO DE LOGIN PARA SALVAR O ESTADO GLOBAL
+      // O backend precisa retornar 'user' e 'token' para isso funcionar
+      login(response.data.user, response.data.token);
 
+      console.log('Login bem-sucedido:', response.data);
+      
+      // Agora a navegação vai funcionar, pois o estado de autenticado estará 'true'
       navigate('/');
 
     } catch (err: any) {
-      
       console.error('Erro no login:', err);
       if (axios.isAxiosError(err) && err.response) {
         setError(err.response.data.message || 'Credenciais inválidas.');
       } else {
         setError('Não foi possível conectar ao servidor. Tente novamente.');
       }
-      setIsLoading(false);
+    } finally {
+        setIsLoading(false);
     }
   };
 
@@ -59,7 +65,7 @@ const Login: React.FC = () => {
         />
       </div>
 
-      {/* Título usando cor primary.dark */}
+      {/* Título */}
       <h1 className="text-2xl md:text-3xl font-bold text-primary-dark mb-6 md:mb-8 text-center">
         Conecte-se
       </h1>

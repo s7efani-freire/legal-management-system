@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Bell, ChevronRight, Menu, Clock, AlertTriangle, FileCheck } from "lucide-react";
 
-// --- DADOS FICTÍCIOS PARA AS NOTIFICAÇÕES ---
+
 const notificationsData = [
   { id: 1, type: 'deadline', message: 'Prazo da Ação Condomínio X está expirando em 3 dias.', time: '5 min atrás', read: false, linkTo: '/acoes-legais', relatedId: 2  },
   { id: 2, type: 'assignment', message: 'Você foi atribuído à nova demanda do Condomínio Y.', time: '2 horas atrás', read: false, linkTo: '/acoes-legais', relatedId: 4 },
@@ -12,7 +12,7 @@ const notificationsData = [
   { id: 6, type: 'completed', message: 'O pagamento dos honorários de Julho foi confirmado.', time: '4 dias atrás', read: true, linkTo: '/acoes-legais', relatedId: 6 },
 ];
 
-// --- COMPONENTE VISUAL DO DROPDOWN ---
+
 const NotificationsDropdown = () => {
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -33,7 +33,7 @@ const NotificationsDropdown = () => {
           <Link
             key={notification.id}
             to={notification.linkTo}
-            state={{ openPopupWithId: notification.relatedId }} // <-- A MÁGICA ACONTECE AQUI
+            state={{ openPopupWithId: notification.relatedId }} 
             className="flex items-start gap-4 p-4 hover:bg-gray-50 border-b last:border-b-0"
           >
             {/* O conteúdo do item da notificação (ícone, texto, etc.) continua o mesmo */}
@@ -60,14 +60,14 @@ const NotificationsDropdown = () => {
   )
 }
 
-// --- COMPONENTE PRINCIPAL DO HEADER ---
+
 const Header: React.FC<{ onMenuClick?: () => void }> = ({ onMenuClick }) => {
   const location = useLocation();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const notificationsRef = useRef<HTMLDivElement>(null);
 
   const getPageTitle = (pathname: string) => {
-    // ... (função getPageTitle sem alterações)
+    
     const routes: Record<string, string> = {
       "/": "Área de Trabalho", "/acoes-legais": "Ações Legais", "/honorarios": "Honorários",
       "/usuarios": "Usuários", "/condominios": "Condomínios", "/condominos": "Condôminos",
@@ -77,7 +77,7 @@ const Header: React.FC<{ onMenuClick?: () => void }> = ({ onMenuClick }) => {
     return routes[pathname] || "Página";
   };
 
-  // Efeito para fechar o dropdown ao clicar fora dele
+  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
@@ -93,7 +93,6 @@ const Header: React.FC<{ onMenuClick?: () => void }> = ({ onMenuClick }) => {
       <div className="flex items-center justify-between">
         {/* Esquerda: Botão menu (mobile) + Título */}
         <div className="flex items-center space-x-3">
-          {/* ... (código do título e menu sem alterações) ... */}
           <button className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100" onClick={onMenuClick}>
             <Menu className="w-6 h-6" />
           </button>
