@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Edit, X } from 'lucide-react';
 
-// --- COMPONENTE MOCKADO (Substitua pelo seu componente real) ---
 const PageContainer: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
   <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
     <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">{title}</h1>
@@ -11,7 +10,6 @@ const PageContainer: React.FC<{ title: string; children: React.ReactNode }> = ({
   </div>
 );
 
-// --- NOVAS INTERFACES ---
 export interface LancamentoHonorarios {
   codigo: number;
   dataLancamento: string;
@@ -29,11 +27,10 @@ export interface AcaoLegal {
   condominioCliente: string;
   parteContraria: string;
   debito: number;
-  // O lançamento de honorários agora é um objeto estruturado
+
   lancamento?: LancamentoHonorarios;
 }
 
-// --- POPUP PARA GERENCIAR HONORÁRIOS (ATUALIZADO) ---
 const HonorariosPopup: React.FC<{
   isOpen: boolean;
   onClose: () => void;
@@ -42,7 +39,7 @@ const HonorariosPopup: React.FC<{
 }> = ({ isOpen, onClose, acao, onSave }) => {
   
   const initialState: LancamentoHonorarios = {
-    codigo: Math.floor(Math.random() * 1000) + 1, // Código aleatório
+    codigo: Math.floor(Math.random() * 1000) + 1,
     dataLancamento: new Date().toISOString().split('T')[0],
     tipoAcordo: 'BOLETO ÚNICO',
     formaPgto: 'BOLETO',
@@ -55,18 +52,18 @@ const HonorariosPopup: React.FC<{
   const [formData, setFormData] = useState<LancamentoHonorarios>(initialState);
 
   useEffect(() => {
-    // Preenche o formulário quando uma ação é selecionada
+  
     if (acao) {
-      // Se já existe um lançamento, usa seus dados. Senão, usa o estado inicial.
+    
       const lancamentoExistente = acao.lancamento;
       setFormData(lancamentoExistente || {
         ...initialState,
-        descricaoItem: `Honorários - ${acao.acao}` // Sugestão de descrição
+        descricaoItem: `Honorários - ${acao.acao}`
       });
     }
   }, [acao]);
   
-  // Calcula o total do débito em tempo real
+
   const totalDebito = useMemo(() => {
     const debitoBase = acao?.debito || 0;
     const honorarios = Number(formData.valorHonorarios) || 0;
@@ -172,7 +169,6 @@ const HonorariosPopup: React.FC<{
 };
 
 
-// --- PÁGINA PRINCIPAL DE HONORÁRIOS ---
 const Honorarios: React.FC = () => {
   const [acoes, setAcoes] = useState<AcaoLegal[]>([
     { id: 1501, acao: "Execução Judicial de Débito - Apto 702", condominioCliente: "Condomínio Villa das Flores", parteContraria: "Carlos E. Montenegro", debito: 14850.75, lancamento: { codigo: 17, dataLancamento: '2025-08-20', tipoAcordo: 'BOLETO ÚNICO', formaPgto: 'BOLETO', dataVencimento: '2025-09-15', descricaoItem: 'Honorários sobre execução judicial', quantidade: 1, valorHonorarios: 1485.07 } },
