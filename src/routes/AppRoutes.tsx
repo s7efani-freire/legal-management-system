@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
 import LoginLayout from '../layouts/LoginLayout';
-import AuthLayout from '../layouts/AuthLayout';
-import ProtectedRoute from '../components/layout/ProtectedRoute';
+import MainLayout from '../layouts/MainLayout';
 
 // Pages
 import Dashboard from '../pages/Dashboard';
@@ -25,22 +25,114 @@ const AppRoutes: React.FC = () => {
   return (
     <Router>
       <Routes>
-        {/* === ROTAS PÚBLICAS === */}
-        <Route path="/login" element={<LoginLayout><Login /></LoginLayout>} />
-        <Route path="/cadastro" element={<AuthLayout><Cadastro /></AuthLayout>} />
+        {/* rotas SEM sidebar */}
+        <Route
+          path="/login"
+          element={
+            <LoginLayout>
+              <Login />
+            </LoginLayout>
+          }
+        />
 
-        {/* === ROTAS PROTEGIDAS === */}
-        <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/acoes-legais" element={<ProtectedRoute><AcoesLegais /></ProtectedRoute>} />
-        <Route path="/honorarios" element={<ProtectedRoute><Honorarios /></ProtectedRoute>} />
-        <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
-        <Route path="/condominios" element={<ProtectedRoute><Condominios /></ProtectedRoute>} />
-        <Route path="/condominos" element={<ProtectedRoute><Condominos /></ProtectedRoute>} />
-        <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/notificacoes" element={<ProtectedRoute><Notificacoes /></ProtectedRoute>} />
-        <Route path="/cadastros/condominios" element={<ProtectedRoute><CadastroCondominios /></ProtectedRoute>} />
-        <Route path="/cadastros/condominos" element={<ProtectedRoute><CadastroCondominos /></ProtectedRoute>} />
-        <Route path="/cadastros/acoes-legais" element={<ProtectedRoute><CadastroAcoesLegais /></ProtectedRoute>} />
+        <Route
+          path="/cadastro"
+          element={
+            <LoginLayout>
+              <Cadastro />
+            </LoginLayout>
+          }
+        />
+
+        {/* rotas PÚBLICAS com sidebar (MainLayout) */}
+        <Route
+          path="/"
+          element={
+            <MainLayout>
+              <Dashboard />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/acoes-legais"
+          element={
+            <MainLayout>
+              <AcoesLegais />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/honorarios"
+          element={
+            <MainLayout>
+              <Honorarios />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/usuarios"
+          element={
+            <MainLayout>
+              <Usuarios />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/condominios"
+          element={
+            <MainLayout>
+              <Condominios />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/condominos"
+          element={
+            <MainLayout>
+              <Condominos />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/perfil"
+          element={
+            <MainLayout>
+              <Profile />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/notificacoes"
+          element={
+            <MainLayout>
+              <Notificacoes />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/cadastros/condominios"
+          element={
+            <MainLayout>
+              <CadastroCondominios />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/cadastros/condominos"
+          element={
+            <MainLayout>
+              <CadastroCondominos />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/cadastros/acoes-legais"
+          element={
+            <MainLayout>
+              <CadastroAcoesLegais />
+            </MainLayout>
+          }
+        />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
