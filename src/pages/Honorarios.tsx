@@ -1,14 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Edit, X } from 'lucide-react';
-
-const PageContainer: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-  <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
-    <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">{title}</h1>
-    <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md">
-      {children}
-    </div>
-  </div>
-);
+import PageContainer from "../components/ui/PageContainer";
 
 export interface LancamentoHonorarios {
   codigo: number;
