@@ -147,3 +147,11 @@ ALTER TABLE resident_units
         FOREIGN KEY (resident_id) REFERENCES residents(id),
     ADD CONSTRAINT fk_resident_units_unit
         FOREIGN KEY (unit_id) REFERENCES residential_units(id);
+
+
+ALTER TABLE condominiums
+  ADD COLUMN condo_type ENUM('APTO_BLOCO','APTO_SIMPLES','CASAS_RUA','CASAS_SIMPLES') NOT NULL
+  AFTER address_complement;
+
+ALTER TABLE residential_units
+  ADD UNIQUE KEY uk_units_unique (condominium_id, unique_code);
