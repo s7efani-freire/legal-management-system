@@ -10,7 +10,7 @@ import AcoesLegais from '../pages/AcoesLegais';
 import Honorarios from '../pages/Honorarios';
 import Usuarios from '../pages/Usuarios';
 import Condominios from '../pages/Condominios';
-import Condominos from '../pages/Condominos';
+import Condominos from '../pages/Residentes';
 import Profile from '../pages/Profile';
 import Notificacoes from '../pages/Notificacoes';
 import Login from '../pages/auth/Login';
@@ -18,7 +18,7 @@ import Cadastro from '../pages/auth/Cadastro';
 
 // Cadastros
 import CadastroCondominios from '../pages/cadastros/CadastroCondominios';
-import CadastroCondominos from '../pages/cadastros/CadastroCondominos';
+import CadastroCondominos from '../pages/cadastros/CadastroResidentes';
 import CadastroAcoesLegais from '../pages/cadastros/CadastroAcoesLegais';
 
 const AppRoutes: React.FC = () => {
