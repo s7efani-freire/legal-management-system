@@ -22,7 +22,11 @@ interface ResidentRow {
   dwellings: Dwelling[];
 }
 
-const API_BASE = "http://localhost:8000";
+import { API_BASE } from '../config/api';
+
+// exemplo
+axios.get(`${API_BASE}/api/condominiums`);
+
 
 const Condominos: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
