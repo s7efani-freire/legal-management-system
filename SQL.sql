@@ -155,3 +155,6 @@ ALTER TABLE condominiums
 
 ALTER TABLE residential_units
   ADD UNIQUE KEY uk_units_unique (condominium_id, unique_code);
+
+ALTER TABLE condominiums
+  ADD COLUMN created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
