@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 import LoginLayout from '../layouts/LoginLayout';
 import MainLayout from '../layouts/MainLayout';
+import AuthLayout from '../layouts/AuthLayout';
 
 // Pages
 import Dashboard from '../pages/Dashboard';
@@ -38,9 +39,9 @@ const AppRoutes: React.FC = () => {
         <Route
           path="/cadastro"
           element={
-            <LoginLayout>
+            <AuthLayout>
               <Cadastro />
-            </LoginLayout>
+            </AuthLayout>
           }
         />
 
