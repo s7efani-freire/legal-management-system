@@ -29,3 +29,4 @@ dist-ssr
 
 # PHP / Composer
 vendor/
+app/config/database.php
