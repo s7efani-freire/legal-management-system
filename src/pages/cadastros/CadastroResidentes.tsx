@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import PageContainer from "../../components/ui/PageContainer";
-import axios from "axios";
+import axios from "axios"; // usado apenas para ViaCEP (API externa)
 import { Plus, Trash2, ChevronDown } from "lucide-react";
-import { API_BASE } from '../../config/api';
+import api from "../../services/api"; // ajuste o caminho se necessário
 
 const inputClass =
   "w-full h-12 px-1 border-0 border-b border-gray-400 text-black bg-white " +
@@ -14,7 +14,8 @@ const selectClass =
   "focus:border-primary focus:ring-0 hover:border-gray-600 transition-colors";
 
 const estados = [
-  "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
+  "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG",
+  "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
 ];
 
 type CondoTypeId = "APTO_BLOCO" | "APTO_SIMPLES" | "CASAS_RUA" | "CASAS_SIMPLES";
@@ -78,6 +79,14 @@ const initialFormData = {
   unidades: [emptyUnit()],
 };
 
+type UnitsOptionsResponse = Partial<Record<UnitFieldKey, string[] | number[]>>;
+
+type ApiEnvelope<T> = {
+  ok?: boolean;
+  message?: string;
+  data?: T;
+};
+
 const CadastroCondominos: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -91,13 +100,14 @@ const CadastroCondominos: React.FC = () => {
 
   const [formData, setFormData] = useState(initialFormData);
 
-
   useEffect(() => {
     const loadCondominiums = async () => {
       setLoadingCondominiums(true);
-      try {
+      setError(null);
 
-        const { data } = await axios.get(`${API_BASE}/api/condominiums`);
+      try {
+        const { data } = await api.get<ApiEnvelope<Condominium[]> | Condominium[]>("/api/condominiums");
+
         const rows =
           Array.isArray(data)
             ? data
@@ -106,11 +116,12 @@ const CadastroCondominos: React.FC = () => {
               : [];
 
         setCondominiums(rows);
-
-
-      } catch (e) {
+      } catch (e: any) {
         console.error(e);
-        setError("Não foi possível carregar a lista de condomínios.");
+        const msg =
+          e?.response?.data?.message ||
+          "Não foi possível carregar a lista de condomínios.";
+        setError(msg);
       } finally {
         setLoadingCondominiums(false);
       }
@@ -128,47 +139,48 @@ const CadastroCondominos: React.FC = () => {
   const getCondoTypeDef = (condo: Condominium | null) =>
     condo ? CONDO_TYPES.find((t) => t.id === condo.condo_type) ?? null : null;
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleCepBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
     const cep = e.target.value.replace(/\D/g, "");
-    if (cep.length === 8) {
-      try {
-        const { data } = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
-        if (!data.erro) {
-          setFormData((prev) => ({
-            ...prev,
-            logradouro: data.logradouro,
-            cidade: data.localidade,
-            uf: data.uf,
-          }));
-        }
-      } catch (err) {
-        console.error("Erro ao buscar CEP:", err);
+    if (cep.length !== 8) return;
+
+    try {
+      const { data } = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+      if (!data.erro) {
+        setFormData((prev) => ({
+          ...prev,
+          logradouro: data.logradouro ?? prev.logradouro,
+          cidade: data.localidade ?? prev.cidade,
+          uf: data.uf ?? prev.uf,
+        }));
       }
+    } catch (err) {
+      console.error("Erro ao buscar CEP:", err);
     }
   };
-
 
   const ensureUnitOptionsLoaded = async (condominiumId: number) => {
     if (unitOptionsByCondo[condominiumId]) return;
 
     try {
-      const { data } = await axios.get(
-        `${API_BASE}/api/units/options?condominium_id=${condominiumId}`
+      const { data } = await api.get<ApiEnvelope<UnitsOptionsResponse> | UnitsOptionsResponse>(
+        "/api/units/options",
+        { params: { condominium_id: condominiumId } }
       );
+
+      const payload = (data as any)?.data ?? data;
 
       setUnitOptionsByCondo((prev) => ({
         ...prev,
         [condominiumId]: {
-          block: data.block ?? [],
-          tower: data.tower ?? [],
-          floor: data.floor ?? [],
-          street: data.street ?? [],
-          number: (data.number ?? []).map(String),
+          block: (payload?.block ?? []) as string[],
+          tower: (payload?.tower ?? []) as string[],
+          floor: (payload?.floor ?? []) as string[],
+          street: (payload?.street ?? []) as string[],
+          number: (payload?.number ?? []).map(String),
         },
       }));
     } catch (e) {
@@ -215,7 +227,6 @@ const CadastroCondominos: React.FC = () => {
     }));
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -260,15 +271,15 @@ const CadastroCondominos: React.FC = () => {
         first_name: formData.nome,
         last_name: formData.sobrenome,
         document_number: formData.documento,
-        email: formData.email,
-        phone_number: formData.telefone,
-        phone_type: formData.tipoDeTelefone,
-        zip_code: formData.cep,
-        street_address: formData.logradouro,
-        street_number: formData.numero,
-        address_complement: formData.complemento,
-        city: formData.cidade,
-        state: formData.uf,
+        email: formData.email || null,
+        phone: formData.telefone || null,
+        phone_type: formData.tipoDeTelefone || null,
+        zip_code: formData.cep || null,
+        street: formData.logradouro || null,
+        number: formData.numero || null,
+        address_complement: formData.complemento || null,
+        city: formData.cidade || null,
+        state: formData.uf || null,
         dwellings: formData.unidades.map((u) => ({
           condominium_id: Number(u.condominiumId),
           block: u.block || null,
@@ -279,23 +290,22 @@ const CadastroCondominos: React.FC = () => {
         })),
       };
 
-      const { data } = await axios.post(
-        `${API_BASE}/api/residents`,
-        payload
-      );
+      const { data } = await api.post<ApiEnvelope<any>>("/api/residents", payload);
 
-      setSuccess(data.message ?? "Cadastro realizado com sucesso.");
+      if (data?.ok === false) {
+        setError(data.message || "Ocorreu um erro ao cadastrar.");
+        return;
+      }
+
+      setSuccess(data?.message ?? "Cadastro realizado com sucesso.");
       setFormData(initialFormData);
       document.getElementById("nome")?.focus();
-    } catch (err: unknown) {
-      if (axios.isAxiosError(err) && err.response) {
-        const msg =
-          (err.response.data as { message?: string } | undefined)?.message ||
-          "Ocorreu um erro ao cadastrar.";
-        setError(msg);
-      } else {
-        setError("Não foi possível conectar ao servidor.");
-      }
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Não foi possível conectar ao servidor.";
+      setError(msg);
     } finally {
       setIsLoading(false);
     }
@@ -344,7 +354,7 @@ const CadastroCondominos: React.FC = () => {
         <input
           type="text"
           name={name}
-          value={u[name]}
+          value={(u as any)[name]}
           onChange={(e) => handleUnitChange(index, e)}
           className={inputClass}
           placeholder={placeholder}
@@ -458,9 +468,9 @@ const CadastroCondominos: React.FC = () => {
                 className={selectClass}
               >
                 <option value="" className="text-gray-400">Selecione</option>
-                <option value="Celular">Celular</option>
-                <option value="Fixo">Fixo</option>
-                <option value="Whatsapp">Whatsapp</option>
+                <option value="LANDLINE">Fixo</option>
+                <option value="MOBILE">Celular</option>
+                <option value="OTHER">Outro</option>
               </select>
               <ChevronDown className="absolute right-0 bottom-3 w-5 h-5 text-gray-400 pointer-events-none" />
             </div>
