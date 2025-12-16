@@ -1,9 +1,19 @@
 import React, { useEffect, useMemo, useState } from "react";
 import PageContainer from "../components/ui/PageContainer";
-import { Info, Trash2, Plus, Building, Mail, Phone, MapPin, FileText, Clock } from "lucide-react";
+import {
+  Info,
+  Trash2,
+  Plus,
+  Building,
+  Mail,
+  Phone,
+  MapPin,
+  FileText,
+  Clock,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import DetailsPopup, { DetailItem } from "../components/ui/DetailsPopup";
-import axios from "axios";
+import api from "../services/api"
 
 type CondominiumApi = {
   id: number;
@@ -17,15 +27,9 @@ type CondominiumApi = {
   number: number | null;
   city: string | null;
   state: string | null;
-  created_at?: string | null; // se não existir no DB, pode vir undefined
+  created_at?: string | null;
   condo_type?: string | null;
 };
-
-import { API_BASE } from '../config/api';
-
-// exemplo
-axios.get(`${API_BASE}/api/condominiums`);
-
 
 const Condominios: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -36,22 +40,38 @@ const Condominios: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // filtros
   const [filterName, setFilterName] = useState("");
   const [filterCnpj, setFilterCnpj] = useState("");
   const [filterCity, setFilterCity] = useState("");
 
-  const fetchCondominios = async (params?: { name?: string; cnpj?: string; city?: string }) => {
+  const fetchCondominios = async (params?: {
+    name?: string;
+    cnpj?: string;
+    city?: string;
+  }) => {
     setLoading(true);
     setError(null);
 
     try {
-      const { data } = await axios.get(`${API_BASE}/api/condominiums`, { params });
-      const list = Array.isArray(data?.data) ? data.data : Array.isArray(data) ? data : [];
+  
+      const { data } = await api.get("/api/condominiums", { params });
+
+  
+      const list = Array.isArray(data?.data)
+        ? data.data
+        : Array.isArray(data)
+        ? data
+        : [];
+
       setRows(list);
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      setError("Não foi possível carregar a lista de condomínios.");
+
+      const message =
+        e?.response?.data?.message ||
+        "Não foi possível carregar a lista de condomínios.";
+
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -65,7 +85,11 @@ const Condominios: React.FC = () => {
     const condominio = rows.find((item) => item.id === id);
     if (!condominio) return;
 
-    const title = condominio.corporate_name || condominio.trade_name || `Condomínio #${condominio.id}`;
+    const title =
+      condominio.corporate_name ||
+      condominio.trade_name ||
+      `Condomínio #${condominio.id}`;
+
     setPopupTitle(title);
 
     const trade = condominio.trade_name ?? "-";
@@ -73,12 +97,13 @@ const Condominios: React.FC = () => {
     const email = condominio.email ?? "-";
     const phone = condominio.phone ?? "-";
 
-    const address = `${condominio.street ?? "-"}, ${condominio.number ?? "-"} - ${condominio.city ?? "-"}/${condominio.state ?? "-"}`;
+    const address = `${condominio.street ?? "-"}, ${
+      condominio.number ?? "-"
+    } - ${condominio.city ?? "-"}/${condominio.state ?? "-"}`;
 
-    const createdAt =
-      condominio.created_at
-        ? new Date(condominio.created_at).toLocaleDateString("pt-BR")
-        : "-";
+    const createdAt = condominio.created_at
+      ? new Date(condominio.created_at).toLocaleDateString("pt-BR")
+      : "-";
 
     const detailsList: DetailItem[] = [
       { icon: <Building />, label: "Nome Fantasia", value: trade },
@@ -137,6 +162,7 @@ const Condominios: React.FC = () => {
             onChange={(e) => setFilterName(e.target.value)}
             className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary/20"
           />
+
           <input
             type="text"
             placeholder="CNPJ"
@@ -144,6 +170,7 @@ const Condominios: React.FC = () => {
             onChange={(e) => setFilterCnpj(e.target.value)}
             className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary/20"
           />
+
           <input
             type="text"
             placeholder="Cidade"
@@ -161,6 +188,7 @@ const Condominios: React.FC = () => {
             >
               {loading ? "Filtrando..." : "Filtrar"}
             </button>
+
             <button
               type="button"
               onClick={handleClear}
@@ -182,34 +210,58 @@ const Condominios: React.FC = () => {
           <table className="min-w-full bg-white">
             <thead className="bg-background">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Nome Fantasia</th>
-                <th className="hidden md:table-cell px-4 py-3 text-left text-sm font-medium text-gray-700">CNPJ</th>
-                <th className="hidden lg:table-cell px-4 py-3 text-left text-sm font-medium text-gray-700">Telefone</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Cidade</th>
-                <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">Ações</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                  Nome Fantasia
+                </th>
+                <th className="hidden md:table-cell px-4 py-3 text-left text-sm font-medium text-gray-700">
+                  CNPJ
+                </th>
+                <th className="hidden lg:table-cell px-4 py-3 text-left text-sm font-medium text-gray-700">
+                  Telefone
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                  Cidade
+                </th>
+                <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">
+                  Ações
+                </th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-200">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-6 text-center text-sm text-gray-500">
+                  <td
+                    colSpan={5}
+                    className="px-4 py-6 text-center text-sm text-gray-500"
+                  >
                     Carregando...
                   </td>
                 </tr>
               ) : tableRows.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-6 text-center text-sm text-gray-500">
+                  <td
+                    colSpan={5}
+                    className="px-4 py-6 text-center text-sm text-gray-500"
+                  >
                     Nenhum condomínio encontrado.
                   </td>
                 </tr>
               ) : (
                 tableRows.map((condominio) => (
                   <tr key={condominio.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm text-gray-800">{condominio.trade_name ?? "-"}</td>
-                    <td className="hidden md:table-cell px-4 py-3 text-sm text-gray-600">{condominio.cnpj ?? "-"}</td>
-                    <td className="hidden lg:table-cell px-4 py-3 text-sm text-gray-600">{condominio.phone ?? "-"}</td>
-                    <td className="px-4 py-3 text-sm text-gray-800">{condominio.city ?? "-"}</td>
+                    <td className="px-4 py-3 text-sm text-gray-800">
+                      {condominio.trade_name ?? "-"}
+                    </td>
+                    <td className="hidden md:table-cell px-4 py-3 text-sm text-gray-600">
+                      {condominio.cnpj ?? "-"}
+                    </td>
+                    <td className="hidden lg:table-cell px-4 py-3 text-sm text-gray-600">
+                      {condominio.phone ?? "-"}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-800">
+                      {condominio.city ?? "-"}
+                    </td>
                     <td className="px-4 py-3 text-sm">
                       <div className="flex items-center justify-center space-x-3">
                         <button
@@ -237,7 +289,12 @@ const Condominios: React.FC = () => {
         </div>
       </PageContainer>
 
-      <DetailsPopup isOpen={isPopupOpen} onClose={handleClosePopup} title={popupTitle} details={selectedDetails} />
+      <DetailsPopup
+        isOpen={isPopupOpen}
+        onClose={handleClosePopup}
+        title={popupTitle}
+        details={selectedDetails}
+      />
     </div>
   );
 };
