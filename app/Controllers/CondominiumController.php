@@ -63,22 +63,27 @@ final class CondominiumController
 
         $createdBy = 1; // MVP
 
+        $isGuarantorRaw = $b['is_guarantor'] ?? $b['isGuarantor'] ?? 0;
+        $isGuarantor = (int)!!$isGuarantorRaw; // normaliza pra 0/1
+            
         $id = Condominium::create([
-            'corporate_name' => $corporate,
-            'trade_name' => $b['trade_name'] ?? null,
-            'email' => $b['email'] ?? null,
-            'cnpj' => $b['cnpj'] ?? null,
-            'phone' => $b['phone'] ?? null,
-            'phone_type' => $b['phone_type'] ?? null,
-            'zip_code' => $b['zip_code'] ?? null,
-            'street' => $b['street'] ?? null,
-            'number' => $b['number'] ?? null,
-            'state' => $b['state'] ?? null,
-            'city' => $b['city'] ?? null,
-            'address_complement' => $b['address_complement'] ?? null,
-            'condo_type' => $condoType,
-            'created_by' => $createdBy,
+          'corporate_name' => $corporate,
+          'trade_name' => $b['trade_name'] ?? null,
+          'email' => $b['email'] ?? null,
+          'cnpj' => $b['cnpj'] ?? null,
+          'phone' => $b['phone'] ?? null,
+          'phone_type' => $b['phone_type'] ?? null,
+          'zip_code' => $b['zip_code'] ?? null,
+          'street' => $b['street'] ?? null,
+          'number' => $b['number'] ?? null,
+          'state' => $b['state'] ?? null,
+          'city' => $b['city'] ?? null,
+          'address_complement' => $b['address_complement'] ?? null,
+          'condo_type' => $condoType,
+          'is_guarantor' => $isGuarantor,
+          'created_by' => $createdBy,
         ]);
+
 
         Response::json([
             'message' => 'Condomínio cadastrado com sucesso.',

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import PageContainer from "../../components/ui/PageContainer";
 import { ChevronDown } from "lucide-react";
-import { API_BASE } from '../../config/api';
+import { API_BASE } from "../../config/api";
 
 const inputClass =
   "w-full h-12 px-1 border-0 border-b border-gray-400 text-black bg-white " +
@@ -13,7 +13,7 @@ const selectClass =
   "focus:border-primary hover:border-gray-600 focus:ring-0 transition-colors";
 
 const UFS = [
-  "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
+  "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO",
 ] as const;
 
 type Uf = (typeof UFS)[number];
@@ -88,6 +88,9 @@ const initialFormData = {
   uf: "" as "" | Uf,
   cidade: "",
   tipoCondominio: "" as "" | CondoTypeId,
+
+  // NOVO: garantidora
+  isGuarantor: false,
 };
 
 const CadastroCondominio: React.FC = () => {
@@ -109,19 +112,17 @@ const CadastroCondominio: React.FC = () => {
     const { name, value } = e.target;
 
     setFormData((prev) => {
-      if (name === "tipoCondominio") {
-        return { ...prev, tipoCondominio: value as CondoTypeId | "" };
-      }
-      if (name === "uf") {
-        return { ...prev, uf: value as Uf | "" };
-      }
-      if (name === "tipoTelefone") {
-        return { ...prev, tipoTelefone: value as "MOBILE" | "LANDLINE" | "OTHER" | "" };
-      }
+      if (name === "tipoCondominio") return { ...prev, tipoCondominio: value as CondoTypeId | "" };
+      if (name === "uf") return { ...prev, uf: value as Uf | "" };
+      if (name === "tipoTelefone") return { ...prev, tipoTelefone: value as "MOBILE" | "LANDLINE" | "OTHER" | "" };
       return { ...prev, [name]: value };
     });
   };
 
+  // NOVO: switch garantidora
+  const handleGuarantorToggle = () => {
+    setFormData((prev) => ({ ...prev, isGuarantor: !prev.isGuarantor }));
+  };
 
   const handleCepBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
     const raw = e.target.value ?? "";
@@ -183,6 +184,9 @@ const CadastroCondominio: React.FC = () => {
       state: formData.uf || null,
       city: formData.cidade.trim() || null,
       condo_type: formData.tipoCondominio,
+
+      // NOVO: backend espera is_guarantor (0/1 ou boolean)
+      is_guarantor: formData.isGuarantor ? 1 : 0,
     };
 
     setIsSaving(true);
@@ -276,12 +280,7 @@ const CadastroCondominio: React.FC = () => {
 
           <div className="relative">
             <label>Tipo de Telefone</label>
-            <select
-              name="tipoTelefone"
-              value={formData.tipoTelefone}
-              onChange={handleChange}
-              className={selectClass}
-            >
+            <select name="tipoTelefone" value={formData.tipoTelefone} onChange={handleChange} className={selectClass}>
               <option value="" className="text-gray-400">Selecione</option>
               <option value="LANDLINE">Fixo</option>
               <option value="MOBILE">Celular</option>
@@ -290,19 +289,45 @@ const CadastroCondominio: React.FC = () => {
             <ChevronDown className="absolute right-0 bottom-3 w-5 h-5 text-gray-400 pointer-events-none" />
           </div>
 
+          {/* NOVO: Switch garantidora */}
+          <div className="md:col-span-2">
+            <label className="block">Condomínio é garantidora?</label>
+            <button
+              type="button"
+              onClick={handleGuarantorToggle}
+              className={[
+                "mt-2 inline-flex items-center gap-3 select-none",
+                "rounded-full border border-gray-300 bg-white px-3 py-2",
+                "hover:border-gray-400 transition-colors",
+              ].join(" ")}
+              aria-pressed={formData.isGuarantor}
+            >
+              <span
+                className={[
+                  "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                  formData.isGuarantor ? "bg-primary" : "bg-gray-300",
+                ].join(" ")}
+              >
+                <span
+                  className={[
+                    "inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform",
+                    formData.isGuarantor ? "translate-x-5" : "translate-x-1",
+                  ].join(" ")}
+                />
+              </span>
+
+              <span className="text-sm text-gray-800">
+                {formData.isGuarantor ? "Sim" : "Não"}
+              </span>
+            </button>
+          </div>
+
           <div className="md:col-span-2 relative">
             <label>Tipo de Condomínio (características)</label>
-            <select
-              name="tipoCondominio"
-              value={formData.tipoCondominio}
-              onChange={handleChange}
-              className={selectClass}
-            >
+            <select name="tipoCondominio" value={formData.tipoCondominio} onChange={handleChange} className={selectClass}>
               <option value="" className="text-gray-400">Selecione</option>
               {CONDO_TYPES.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.label}
-                </option>
+                <option key={t.id} value={t.id}>{t.label}</option>
               ))}
             </select>
             <ChevronDown className="absolute right-0 bottom-3 w-5 h-5 text-gray-400 pointer-events-none" />
@@ -316,18 +341,12 @@ const CadastroCondominio: React.FC = () => {
                     {selectedCondoType.unitFields
                       .map((f) => {
                         switch (f) {
-                          case "block":
-                            return "Bloco";
-                          case "tower":
-                            return "Torre";
-                          case "floor":
-                            return "Andar";
-                          case "street":
-                            return "Rua";
-                          case "number":
-                            return selectedCondoType.numberLabel;
-                          default:
-                            return f;
+                          case "block": return "Bloco";
+                          case "tower": return "Torre";
+                          case "floor": return "Andar";
+                          case "street": return "Rua";
+                          case "number": return selectedCondoType.numberLabel;
+                          default: return f;
                         }
                       })
                       .join(", ")}
@@ -390,17 +409,10 @@ const CadastroCondominio: React.FC = () => {
 
           <div className="relative">
             <label>UF</label>
-            <select
-              name="uf"
-              value={formData.uf}
-              onChange={handleChange}
-              className={selectClass}
-            >
+            <select name="uf" value={formData.uf} onChange={handleChange} className={selectClass}>
               <option value="" className="text-gray-400">Selecione</option>
               {UFS.map((uf) => (
-                <option key={uf} value={uf}>
-                  {uf}
-                </option>
+                <option key={uf} value={uf}>{uf}</option>
               ))}
             </select>
             <ChevronDown className="absolute right-0 bottom-3 w-5 h-5 text-gray-400 pointer-events-none" />
@@ -419,16 +431,8 @@ const CadastroCondominio: React.FC = () => {
           </div>
         </div>
 
-        {error && (
-          <div className="text-center text-red-600 bg-red-100 p-3 rounded-md w-full">
-            {error}
-          </div>
-        )}
-        {success && (
-          <div className="text-center text-green-600 bg-green-100 p-3 rounded-md w-full">
-            {success}
-          </div>
-        )}
+        {error && <div className="text-center text-red-600 bg-red-100 p-3 rounded-md w-full">{error}</div>}
+        {success && <div className="text-center text-green-600 bg-green-100 p-3 rounded-md w-full">{success}</div>}
 
         <div className="flex justify-end pt-4">
           <button

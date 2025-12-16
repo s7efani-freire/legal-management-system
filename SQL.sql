@@ -158,3 +158,6 @@ ALTER TABLE residential_units
 
 ALTER TABLE condominiums
   ADD COLUMN created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+  ALTER TABLE condominiums
+ADD COLUMN is_garantidora TINYINT(1) NOT NULL DEFAULT 0;
