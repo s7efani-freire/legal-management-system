@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import PageContainer from "../../components/ui/PageContainer";
 import axios from "axios";
 import { Plus, Trash2, ChevronDown } from "lucide-react";
+import { API_BASE } from '../../config/api';
 
 const inputClass =
   "w-full h-12 px-1 border-0 border-b border-gray-400 text-black bg-white " +
@@ -13,7 +14,7 @@ const selectClass =
   "focus:border-primary focus:ring-0 hover:border-gray-600 transition-colors";
 
 const estados = [
-  "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO",
+  "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
 ];
 
 type CondoTypeId = "APTO_BLOCO" | "APTO_SIMPLES" | "CASAS_RUA" | "CASAS_SIMPLES";
@@ -35,9 +36,9 @@ type CondoTypeDef = {
 };
 
 const CONDO_TYPES: CondoTypeDef[] = [
-  { id: "APTO_BLOCO", label: "Apartamentos com bloco e andar", unitFields: ["block","floor","number"], numberLabel: "Apartamento" },
-  { id: "APTO_SIMPLES", label: "Apartamentos (andar e apartamento)", unitFields: ["floor","number"], numberLabel: "Apartamento" },
-  { id: "CASAS_RUA", label: "Casas (rua e número)", unitFields: ["street","number"], numberLabel: "Casa" },
+  { id: "APTO_BLOCO", label: "Apartamentos com bloco e andar", unitFields: ["block", "floor", "number"], numberLabel: "Apartamento" },
+  { id: "APTO_SIMPLES", label: "Apartamentos (andar e apartamento)", unitFields: ["floor", "number"], numberLabel: "Apartamento" },
+  { id: "CASAS_RUA", label: "Casas (rua e número)", unitFields: ["street", "number"], numberLabel: "Casa" },
   { id: "CASAS_SIMPLES", label: "Casas (somente número)", unitFields: ["number"], numberLabel: "Casa" },
 ];
 
@@ -90,13 +91,23 @@ const CadastroCondominos: React.FC = () => {
 
   const [formData, setFormData] = useState(initialFormData);
 
- 
+
   useEffect(() => {
     const loadCondominiums = async () => {
       setLoadingCondominiums(true);
       try {
-        const { data } = await axios.get("http://localhost:8000/api/condominiums");
-        setCondominiums(Array.isArray(data) ? data : []);
+
+        const { data } = await axios.get(`${API_BASE}/api/condominiums`);
+        const rows =
+          Array.isArray(data)
+            ? data
+            : Array.isArray((data as any)?.data)
+              ? (data as any).data
+              : [];
+
+        setCondominiums(rows);
+
+
       } catch (e) {
         console.error(e);
         setError("Não foi possível carregar a lista de condomínios.");
@@ -117,7 +128,7 @@ const CadastroCondominos: React.FC = () => {
   const getCondoTypeDef = (condo: Condominium | null) =>
     condo ? CONDO_TYPES.find((t) => t.id === condo.condo_type) ?? null : null;
 
- 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -141,13 +152,13 @@ const CadastroCondominos: React.FC = () => {
     }
   };
 
- 
+
   const ensureUnitOptionsLoaded = async (condominiumId: number) => {
     if (unitOptionsByCondo[condominiumId]) return;
 
     try {
       const { data } = await axios.get(
-        `http://localhost:8000/api/units/options?condominium_id=${condominiumId}`
+        `${API_BASE}/api/units/options?condominium_id=${condominiumId}`
       );
 
       setUnitOptionsByCondo((prev) => ({
@@ -204,7 +215,7 @@ const CadastroCondominos: React.FC = () => {
     }));
   };
 
- 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -268,7 +279,10 @@ const CadastroCondominos: React.FC = () => {
         })),
       };
 
-      const { data } = await axios.post("http://localhost:8000/api/residents", payload);
+      const { data } = await axios.post(
+        `${API_BASE}/api/residents`,
+        payload
+      );
 
       setSuccess(data.message ?? "Cadastro realizado com sucesso.");
       setFormData(initialFormData);
@@ -302,25 +316,25 @@ const CadastroCondominos: React.FC = () => {
       field === "block"
         ? "Bloco"
         : field === "tower"
-        ? "Torre"
-        : field === "floor"
-        ? "Andar"
-        : field === "street"
-        ? "Rua"
-        : numberLabel;
+          ? "Torre"
+          : field === "floor"
+            ? "Andar"
+            : field === "street"
+              ? "Rua"
+              : numberLabel;
 
     const placeholder =
       field === "block"
         ? "Ex: A, PITANGA, 2"
         : field === "tower"
-        ? "Ex: 1, 2, Norte"
-        : field === "floor"
-        ? "Ex: 1, 2, Térreo"
-        : field === "street"
-        ? "Ex: 1, Alameda A"
-        : numberLabel === "Casa"
-        ? "Ex: 15"
-        : "Ex: 101";
+          ? "Ex: 1, 2, Norte"
+          : field === "floor"
+            ? "Ex: 1, 2, Térreo"
+            : field === "street"
+              ? "Ex: 1, Alameda A"
+              : numberLabel === "Casa"
+                ? "Ex: 15"
+                : "Ex: 101";
 
     const name = field === "number" ? "number" : field;
 
