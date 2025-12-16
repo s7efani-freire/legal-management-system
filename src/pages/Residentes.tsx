@@ -3,7 +3,7 @@ import PageContainer from "../components/ui/PageContainer";
 import { Info, Trash2, Plus, Building, Mail, Phone, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import DetailsPopup, { DetailItem } from "../components/ui/DetailsPopup";
-import axios from "axios";
+import api from "../services/api";
 
 interface Dwelling {
   unit_number: string;
@@ -22,12 +22,6 @@ interface ResidentRow {
   dwellings: Dwelling[];
 }
 
-import { API_BASE } from '../config/api';
-
-// exemplo
-axios.get(`${API_BASE}/api/condominiums`);
-
-
 const Condominos: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<DetailItem[]>([]);
@@ -37,22 +31,36 @@ const Condominos: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // filtros
   const [filterName, setFilterName] = useState("");
   const [filterDoc, setFilterDoc] = useState("");
   const [filterCondo, setFilterCondo] = useState("");
 
-  const fetchResidents = async (params?: { name?: string; document?: string; condominium?: string }) => {
+  const fetchResidents = async (params?: {
+    name?: string;
+    document?: string;
+    condominium?: string;
+  }) => {
     setLoading(true);
     setError(null);
 
     try {
-      const { data } = await axios.get(`${API_BASE}/api/residents`, { params });
-      const list = Array.isArray(data?.data) ? data.data : Array.isArray(data) ? data : [];
+      const { data } = await api.get("/api/residents", { params });
+
+      const list = Array.isArray(data?.data)
+        ? data.data
+        : Array.isArray(data)
+        ? data
+        : [];
+
       setRows(list);
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      setError("Não foi possível carregar a lista de condôminos.");
+
+      const message =
+        e?.response?.data?.message ||
+        "Não foi possível carregar a lista de condôminos.";
+
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -134,6 +142,7 @@ const Condominos: React.FC = () => {
             onChange={(e) => setFilterName(e.target.value)}
             className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary/20"
           />
+
           <input
             type="text"
             placeholder="CNPJ ou CPF"
@@ -141,6 +150,7 @@ const Condominos: React.FC = () => {
             onChange={(e) => setFilterDoc(e.target.value)}
             className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary/20"
           />
+
           <input
             type="text"
             placeholder="Condomínio"
@@ -158,6 +168,7 @@ const Condominos: React.FC = () => {
             >
               {loading ? "Filtrando..." : "Filtrar"}
             </button>
+
             <button
               type="button"
               onClick={handleClear}
@@ -208,8 +219,12 @@ const Condominos: React.FC = () => {
                   return (
                     <tr key={item.id} className="hover:bg-gray-50">
                       <td className="px-4 py-3 text-sm text-gray-800">{name || "-"}</td>
-                      <td className="hidden md:table-cell px-4 py-3 text-sm text-gray-600">{item.document_number ?? "-"}</td>
-                      <td className="hidden lg:table-cell px-4 py-3 text-sm text-gray-600">{item.phone ?? "-"}</td>
+                      <td className="hidden md:table-cell px-4 py-3 text-sm text-gray-600">
+                        {item.document_number ?? "-"}
+                      </td>
+                      <td className="hidden lg:table-cell px-4 py-3 text-sm text-gray-600">
+                        {item.phone ?? "-"}
+                      </td>
                       <td className="px-4 py-3 text-sm text-gray-800">{firstCondo}</td>
                       <td className="px-4 py-3 text-sm">
                         <div className="flex items-center justify-center space-x-3">
@@ -220,6 +235,7 @@ const Condominos: React.FC = () => {
                           >
                             <Info className="w-5 h-5" />
                           </button>
+
                           <button
                             className="text-red-500 hover:text-red-700 transition-colors"
                             title="Excluir (ainda não implementado)"
@@ -238,7 +254,12 @@ const Condominos: React.FC = () => {
         </div>
       </PageContainer>
 
-      <DetailsPopup isOpen={isPopupOpen} onClose={handleClosePopup} title={popupTitle} details={selectedDetails} />
+      <DetailsPopup
+        isOpen={isPopupOpen}
+        onClose={handleClosePopup}
+        title={popupTitle}
+        details={selectedDetails}
+      />
     </div>
   );
 };
