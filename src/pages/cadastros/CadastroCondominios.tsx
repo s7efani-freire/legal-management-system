@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import PageContainer from "../../components/ui/PageContainer";
 import { ChevronDown } from "lucide-react";
-import { API_BASE } from "../../config/api";
+import api from "../../services/api"; // ajuste o caminho se necessário
 
 const inputClass =
   "w-full h-12 px-1 border-0 border-b border-gray-400 text-black bg-white " +
@@ -70,8 +70,10 @@ type ViaCepResponse = {
 };
 
 type ApiResponse = {
+  ok?: boolean;
   message?: string;
-  id?: number;
+  data?: any;
+  id?: number; // se você usar isso no backend
 };
 
 const initialFormData = {
@@ -89,7 +91,7 @@ const initialFormData = {
   cidade: "",
   tipoCondominio: "" as "" | CondoTypeId,
 
-  // NOVO: garantidora
+  // garantidora
   isGuarantor: false,
 };
 
@@ -114,12 +116,12 @@ const CadastroCondominio: React.FC = () => {
     setFormData((prev) => {
       if (name === "tipoCondominio") return { ...prev, tipoCondominio: value as CondoTypeId | "" };
       if (name === "uf") return { ...prev, uf: value as Uf | "" };
-      if (name === "tipoTelefone") return { ...prev, tipoTelefone: value as "MOBILE" | "LANDLINE" | "OTHER" | "" };
+      if (name === "tipoTelefone")
+        return { ...prev, tipoTelefone: value as "MOBILE" | "LANDLINE" | "OTHER" | "" };
       return { ...prev, [name]: value };
     });
   };
 
-  // NOVO: switch garantidora
   const handleGuarantorToggle = () => {
     setFormData((prev) => ({ ...prev, isGuarantor: !prev.isGuarantor }));
   };
@@ -127,8 +129,8 @@ const CadastroCondominio: React.FC = () => {
   const handleCepBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
     const raw = e.target.value ?? "";
     const cep = raw.replace(/\D/g, "");
-    setCepError(null);
 
+    setCepError(null);
     setFormData((prev) => ({ ...prev, cep: raw }));
 
     if (cep.length !== 8) return;
@@ -184,31 +186,28 @@ const CadastroCondominio: React.FC = () => {
       state: formData.uf || null,
       city: formData.cidade.trim() || null,
       condo_type: formData.tipoCondominio,
-
-      // NOVO: backend espera is_guarantor (0/1 ou boolean)
       is_guarantor: formData.isGuarantor ? 1 : 0,
     };
 
     setIsSaving(true);
 
     try {
-      const resp = await fetch(`${API_BASE}/api/condominiums`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const { data } = await api.post<ApiResponse>("/api/condominiums", payload);
 
-      const data: ApiResponse = await resp.json().catch(() => ({}));
-
-      if (!resp.ok) {
+      if (data?.ok === false) {
         setError(data.message || "Não foi possível cadastrar o condomínio.");
         return;
       }
 
-      setSuccess(data.message || "Condomínio cadastrado com sucesso.");
+      setSuccess(data?.message || "Condomínio cadastrado com sucesso.");
       setFormData(initialFormData);
-    } catch {
-      setError("Falha ao conectar ao servidor.");
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Falha ao conectar ao servidor.";
+
+      setError(message);
     } finally {
       setIsSaving(false);
     }
@@ -280,7 +279,12 @@ const CadastroCondominio: React.FC = () => {
 
           <div className="relative">
             <label>Tipo de Telefone</label>
-            <select name="tipoTelefone" value={formData.tipoTelefone} onChange={handleChange} className={selectClass}>
+            <select
+              name="tipoTelefone"
+              value={formData.tipoTelefone}
+              onChange={handleChange}
+              className={selectClass}
+            >
               <option value="" className="text-gray-400">Selecione</option>
               <option value="LANDLINE">Fixo</option>
               <option value="MOBILE">Celular</option>
@@ -289,7 +293,6 @@ const CadastroCondominio: React.FC = () => {
             <ChevronDown className="absolute right-0 bottom-3 w-5 h-5 text-gray-400 pointer-events-none" />
           </div>
 
-          {/* NOVO: Switch garantidora */}
           <div className="md:col-span-2">
             <label className="block">Condomínio é garantidora?</label>
             <button
@@ -324,12 +327,18 @@ const CadastroCondominio: React.FC = () => {
 
           <div className="md:col-span-2 relative">
             <label>Tipo de Condomínio (características)</label>
-            <select name="tipoCondominio" value={formData.tipoCondominio} onChange={handleChange} className={selectClass}>
+            <select
+              name="tipoCondominio"
+              value={formData.tipoCondominio}
+              onChange={handleChange}
+              className={selectClass}
+            >
               <option value="" className="text-gray-400">Selecione</option>
               {CONDO_TYPES.map((t) => (
                 <option key={t.id} value={t.id}>{t.label}</option>
               ))}
             </select>
+
             <ChevronDown className="absolute right-0 bottom-3 w-5 h-5 text-gray-400 pointer-events-none" />
 
             {selectedCondoType && (
