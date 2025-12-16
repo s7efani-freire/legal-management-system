@@ -161,3 +161,8 @@ ALTER TABLE condominiums
 
   ALTER TABLE condominiums
 ADD COLUMN is_garantidora TINYINT(1) NOT NULL DEFAULT 0;
+
+
+ALTER TABLE users ADD UNIQUE KEY uq_users_email (email);
+ALTER TABLE users ADD UNIQUE KEY uq_users_cpf (cpf);
+ALTER TABLE `users` CHANGE `user_type` `user_type` ENUM('ADMIN','MANAGER','LAWYER','ACCOUNTING','OTHER') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
