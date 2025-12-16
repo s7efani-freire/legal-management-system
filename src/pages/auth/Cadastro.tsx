@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../services/api";
 
 const logoUrl = "/logo-square-blue.png";
 
@@ -80,9 +80,9 @@ const Cadastro: React.FC = () => {
         password: formData.senha,
       };
 
-      const { data } = await axios.post("/api/auth/register", payload);
+      const { data } = await api.post("/api/auth/register", payload);
 
-      setSuccess(data.message || "Cadastro realizado com sucesso.");
+      setSuccess(data?.message || "Cadastro realizado com sucesso.");
       setFormData({
         nome: "",
         sobrenome: "",
@@ -93,11 +93,11 @@ const Cadastro: React.FC = () => {
         confirmarSenha: "",
       });
     } catch (err: any) {
-      if (axios.isAxiosError(err) && err.response) {
-        setError(err.response.data.message || "Erro ao cadastrar.");
-      } else {
-        setError("Não foi possível conectar ao servidor.");
-      }
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Erro ao cadastrar.";
+      setError(message);
     } finally {
       setIsLoading(false);
     }
@@ -115,7 +115,6 @@ const Cadastro: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {/* Nome */}
             <div>
               <label className="text-sm font-medium">Nome*</label>
               <input
@@ -124,11 +123,9 @@ const Cadastro: React.FC = () => {
                 value={formData.nome}
                 onChange={handleChange}
                 className={inputClass}
-                placeholder="Digite seu nome"
               />
             </div>
 
-            {/* Sobrenome */}
             <div>
               <label className="text-sm font-medium">Sobrenome*</label>
               <input
@@ -137,11 +134,9 @@ const Cadastro: React.FC = () => {
                 value={formData.sobrenome}
                 onChange={handleChange}
                 className={inputClass}
-                placeholder="Digite seu sobrenome"
               />
             </div>
 
-            {/* CPF */}
             <div>
               <label className="text-sm font-medium">CPF*</label>
               <input
@@ -150,11 +145,9 @@ const Cadastro: React.FC = () => {
                 value={formData.cpf}
                 onChange={handleChange}
                 className={inputClass}
-                placeholder="000.000.000-00"
               />
             </div>
 
-            {/* Tipo de usuário */}
             <div>
               <label className="text-sm font-medium">Tipo de Usuário*</label>
               <select
@@ -170,7 +163,6 @@ const Cadastro: React.FC = () => {
               </select>
             </div>
 
-            {/* Email – DUAS COLUNAS */}
             <div className="sm:col-span-2">
               <label className="text-sm font-medium">Email*</label>
               <input
@@ -179,11 +171,9 @@ const Cadastro: React.FC = () => {
                 value={formData.email}
                 onChange={handleChange}
                 className={inputClass}
-                placeholder="Digite seu email"
               />
             </div>
 
-            {/* Senha */}
             <div>
               <label className="text-sm font-medium">Senha*</label>
               <input
@@ -192,11 +182,9 @@ const Cadastro: React.FC = () => {
                 value={formData.senha}
                 onChange={handleChange}
                 className={inputClass}
-                placeholder="Digite a senha"
               />
             </div>
 
-            {/* Confirmar senha */}
             <div>
               <label className="text-sm font-medium">Confirmar senha*</label>
               <input
@@ -205,7 +193,6 @@ const Cadastro: React.FC = () => {
                 value={formData.confirmarSenha}
                 onChange={handleChange}
                 className={inputClass}
-                placeholder="Confirme a senha"
               />
             </div>
           </div>
@@ -224,7 +211,7 @@ const Cadastro: React.FC = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:bg-gray-400"
+            className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary-dark disabled:bg-gray-400"
           >
             {isLoading ? "Cadastrando..." : "Cadastrar"}
           </button>
