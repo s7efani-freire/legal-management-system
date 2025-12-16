@@ -21,7 +21,11 @@ type CondominiumApi = {
   condo_type?: string | null;
 };
 
-const API_BASE = "http://localhost:8000";
+import { API_BASE } from '../config/api';
+
+// exemplo
+axios.get(`${API_BASE}/api/condominiums`);
+
 
 const Condominios: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
