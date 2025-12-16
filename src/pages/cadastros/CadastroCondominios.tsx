@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import PageContainer from "../../components/ui/PageContainer";
 import { ChevronDown } from "lucide-react";
+import { API_BASE } from '../../config/api';
 
 const inputClass =
   "w-full h-12 px-1 border-0 border-b border-gray-400 text-black bg-white " +
@@ -12,7 +13,7 @@ const selectClass =
   "focus:border-primary hover:border-gray-600 focus:ring-0 transition-colors";
 
 const UFS = [
-  "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO",
+  "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
 ] as const;
 
 type Uf = (typeof UFS)[number];
@@ -185,8 +186,9 @@ const CadastroCondominio: React.FC = () => {
     };
 
     setIsSaving(true);
+
     try {
-      const resp = await fetch("http://localhost:8000/api/condominiums", {
+      const resp = await fetch(`${API_BASE}/api/condominiums`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
