@@ -25,7 +25,7 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy dist via FTP
+      - name: Deploy dist via FTP (sync only)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -35,6 +35,7 @@ jobs:
           local-dir: dist/
           server-dir: public_html/
           dangerous-clean-slate: false
+
           exclude: |
             **/api/**
             **/app/**
