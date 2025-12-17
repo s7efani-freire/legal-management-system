@@ -53,20 +53,9 @@ $router->put('/api/profile/password', [ProfileController::class, 'changePassword
 
 $router->post('/api/profile/test-upload', [ProfileController::class, 'testUpload']);
 
-/* =========================
-   USERS + PERMISSIONS
-   ========================= */
-
-// lista usuários com permissions reais
 $router->get('/api/users', [UsersController::class, 'index'], [$auth]);
-
-// desativar usuário (soft delete)
 $router->post('/api/users/deactivate', [UsersController::class, 'destroy'], [$auth]);
-
-// listar todas as permissões
 $router->get('/api/permissions', [PermissionsController::class, 'index'], [$auth]);
-
-// setar (sincronizar) permissões do usuário
 $router->post('/api/users/permissions/set', [UsersController::class, 'setPermissions'], [$auth]);
 
 $router->dispatch($req);

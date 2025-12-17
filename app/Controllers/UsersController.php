@@ -16,7 +16,6 @@ final class UsersController
         $this->users = new UserModel();
     }
 
-    // GET /api/users
     public function index(Request $req, Response $res): void
     {
         $rows = $this->users->listAllActive();
@@ -47,7 +46,6 @@ final class UsersController
         $res->json(['ok' => true, 'groups' => $groups]);
     }
 
-    // POST /api/users/deactivate  { id }
     public function destroy(Request $req, Response $res): void
     {
         $body = $req->json();
@@ -78,16 +76,23 @@ final class UsersController
         $res->json(['message' => 'Usuário desativado com sucesso']);
     }
 
-    // POST /api/users/permissions/set  { id, permissions: [] }
     public function setPermissions(Request $req, Response $res): void
     {
-        // Proteção simples: só ADMIN pode gerenciar permissões
+        
+
         $authId = (int)($_SESSION['user_id'] ?? 0);
-        $authUser = $authId > 0 ? $this->users->findAuthById($authId) : null;
-        if (!$authUser || ($authUser['user_type'] ?? '') !== 'ADMIN') {
+        if ($authId <= 0) {
+            $res->json(['message' => 'Não autenticado'], 401);
+            return;
+        }
+
+        $authPerms = $this->users->getPermissionsByUserId($authId);
+
+        if (!in_array('usuarios.view', $authPerms, true)) {
             $res->json(['message' => 'Acesso negado'], 403);
             return;
         }
+
 
         $body = $req->json();
         $id = (int)($body['id'] ?? 0);
@@ -104,11 +109,11 @@ final class UsersController
             return;
         }
 
-        // Opcional: não permitir mexer em ADMIN
-        // if (($target['user_type'] ?? '') === 'ADMIN') {
-        //     $res->json(['message' => 'Não é permitido editar permissões de ADMIN'], 403);
-        //     return;
-        // }
+
+
+
+
+
 
         $this->users->setPermissionsByNames($id, $permissions);
 

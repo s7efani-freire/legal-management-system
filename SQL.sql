@@ -170,8 +170,7 @@ ALTER TABLE `users` CHANGE `user_type` `user_type` ENUM('ADMIN','MANAGER','LAWYE
 ALTER TABLE users
   ADD COLUMN profile_photo_path VARCHAR(255) NULL AFTER password_hash;
 
--- // novas
-  ALTER TABLE users
+ALTER TABLE users
 ADD is_active TINYINT(1) NOT NULL DEFAULT 1;
 
 ALTER TABLE users
