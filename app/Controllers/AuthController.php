@@ -7,6 +7,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Models\UserModel;
 use App\Core\Database;
+use App\Services\Normalize;
 
 final class AuthController
 {
@@ -22,10 +23,10 @@ final class AuthController
     public function register(Request $req, Response $res): void
     {
         $body = $req->json(); 
-        $first = trim((string)($body['first_name'] ?? ''));
-        $last  = trim((string)($body['last_name'] ?? ''));
+        $first = Normalize::name((string)($body['first_name'] ?? ''));
+        $last  = Normalize::name((string)($body['last_name'] ?? ''));
+        $email = Normalize::email((string)($body['email'] ?? ''));
         $cpf   = preg_replace('/\D+/', '', (string)($body['cpf'] ?? ''));
-        $email = strtolower(trim((string)($body['email'] ?? '')));
         $type  = strtoupper(trim((string)($body['user_type'] ?? '')));
         $pass  = (string)($body['password'] ?? '');
 
@@ -90,6 +91,8 @@ final class AuthController
 
         session_regenerate_id(true);
         $_SESSION['user_id'] = (int)$user['id'];
+        $perms = $this->users->getPermissionsByUserId((int)$user['id']);
+        $_SESSION['permissions'] = $perms;
 
         $safeUser = [
             'id'         => (int)$user['id'],
@@ -98,8 +101,9 @@ final class AuthController
             'cpf'        => $user['cpf'],
             'email'      => $user['email'],
             'user_type'  => $user['user_type'],
+            'permissions' => $perms,
         ];
-
+        
         $res->json(['ok' => true, 'message' => 'Login realizado', 'data' => ['user' => $safeUser]]);
     }
 
@@ -110,13 +114,16 @@ final class AuthController
             $res->json(['ok' => false, 'message' => 'Não autenticado'], 401);
             return;
         }
-
+    
         $user = $this->users->findById($id);
         if (!$user) {
             $res->json(['ok' => false, 'message' => 'Usuário não encontrado'], 404);
             return;
         }
-
+    
+        $perms = $this->users->getPermissionsByUserId($id);
+        $user['permissions'] = $perms;
+    
         $res->json(['ok' => true, 'data' => ['user' => $user]]);
     }
 
