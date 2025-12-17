@@ -13,6 +13,9 @@ use App\Controllers\UnitController;
 use App\Controllers\ResidentController;
 use App\Controllers\AuthController;
 use App\Controllers\ProfileController;
+use App\Controllers\UsersController;
+use App\Controllers\PermissionsController;
+
 use App\Middleware\AuthMiddleware;
 
 header('Access-Control-Allow-Origin: http://localhost:5173');
@@ -29,20 +32,41 @@ $router = new Router();
 $req = new Request();
 
 $auth = new AuthMiddleware();
+
 $router->post('/api/auth/register', [AuthController::class, 'register']);
 $router->post('/api/auth/login',    [AuthController::class, 'login']);
 $router->post('/api/auth/logout',   [AuthController::class, 'logout'], [$auth]);
 $router->get('/api/auth/me',        [AuthController::class, 'me'],     [$auth]);
+
 $router->get('/api/condominiums',  [CondominiumController::class, 'index'], [$auth]);
 $router->post('/api/condominiums', [CondominiumController::class, 'store'], [$auth]);
+
 $router->get('/api/units/options', [UnitController::class, 'options'], [$auth]);
+
 $router->get('/api/residents',  [ResidentController::class, 'index'], [$auth]);
 $router->post('/api/residents', [ResidentController::class, 'store'], [$auth]);
+
 $router->get('/api/profile/me', [ProfileController::class, 'me'], [$auth]);
 $router->post('/api/profile/photo', [ProfileController::class, 'uploadPhoto'], [$auth]);
 $router->put('/api/profile', [ProfileController::class, 'updateProfile'], [$auth]);
 $router->put('/api/profile/password', [ProfileController::class, 'changePassword'], [$auth]);
-$router->post('/api/auth/logout', [AuthController::class, 'logout'], [$auth]);
+
 $router->post('/api/profile/test-upload', [ProfileController::class, 'testUpload']);
+
+/* =========================
+   USERS + PERMISSIONS
+   ========================= */
+
+// lista usuários com permissions reais
+$router->get('/api/users', [UsersController::class, 'index'], [$auth]);
+
+// desativar usuário (soft delete)
+$router->post('/api/users/deactivate', [UsersController::class, 'destroy'], [$auth]);
+
+// listar todas as permissões
+$router->get('/api/permissions', [PermissionsController::class, 'index'], [$auth]);
+
+// setar (sincronizar) permissões do usuário
+$router->post('/api/users/permissions/set', [UsersController::class, 'setPermissions'], [$auth]);
 
 $router->dispatch($req);
