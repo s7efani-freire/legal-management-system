@@ -18,4 +18,14 @@ final class Normalize {
     }
     return $v;
   }
+      public static function name(string $value): string
+    {
+        $value = trim(mb_strtolower($value, 'UTF-8'));
+        return mb_convert_case($value, MB_CASE_TITLE, 'UTF-8');
+    }
+
+    public static function email(string $value): string
+    {
+        return mb_strtolower(trim($value), 'UTF-8');
+    }
 }
