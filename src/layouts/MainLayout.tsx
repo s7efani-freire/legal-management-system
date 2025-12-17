@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
+import { useAuth } from "../context/AuthContext";
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const { user } = useAuth();
+  const permissions = user?.permissions ?? [];
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -16,7 +20,11 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       )}
 
       {/* Sidebar */}
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        permissions={permissions}
+      />
 
       {/* Conteúdo principal */}
       <div className="flex flex-col flex-1">
@@ -26,8 +34,6 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             {children}
           </div>
         </main>
-
-
       </div>
     </div>
   );
