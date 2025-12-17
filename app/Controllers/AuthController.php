@@ -14,14 +14,14 @@ final class AuthController
 
     public function __construct()
     {
-        // adapte conforme seu container/injeção:
+        
         $db = new Database();
         $this->users = new UserModel($db);
     }
 
     public function register(Request $req, Response $res): void
     {
-        $body = $req->json(); // adapte: método que retorna array do JSON
+        $body = $req->json(); 
         $first = trim((string)($body['first_name'] ?? ''));
         $last  = trim((string)($body['last_name'] ?? ''));
         $cpf   = preg_replace('/\D+/', '', (string)($body['cpf'] ?? ''));
@@ -62,7 +62,7 @@ final class AuthController
             'password_hash' => password_hash($pass, PASSWORD_DEFAULT),
         ]);
 
-        // opcional: logar automaticamente
+        
         session_regenerate_id(true);
         $_SESSION['user_id'] = $userId;
 
@@ -120,15 +120,18 @@ final class AuthController
         $res->json(['ok' => true, 'data' => ['user' => $user]]);
     }
 
-    public function logout(Request $req, Response $res): void
+    public static function logout(Request $req): void
     {
         $_SESSION = [];
+    
         if (ini_get('session.use_cookies')) {
             $params = session_get_cookie_params();
             setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
         }
+    
         session_destroy();
-
-        $res->json(['ok' => true, 'message' => 'Logout realizado']);
+    
+        Response::json(['ok' => true, 'message' => 'Logout realizado'], 200);
     }
+
 }
