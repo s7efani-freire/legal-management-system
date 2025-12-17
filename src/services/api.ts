@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "",          // importante: vazio
-  // withCredentials: true, // não é necessário com proxy (mas pode deixar, não atrapalha)
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true, // 🔥 OBRIGATÓRIO
 });
 
 export default api;
