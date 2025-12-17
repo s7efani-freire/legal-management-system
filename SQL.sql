@@ -169,3 +169,15 @@ ALTER TABLE `users` CHANGE `user_type` `user_type` ENUM('ADMIN','MANAGER','LAWYE
 
 ALTER TABLE users
   ADD COLUMN profile_photo_path VARCHAR(255) NULL AFTER password_hash;
+
+-- // novas
+  ALTER TABLE users
+ADD is_active TINYINT(1) NOT NULL DEFAULT 1;
+
+ALTER TABLE users
+ADD created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+ADD updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+ALTER TABLE user_permissions
+ADD UNIQUE KEY uniq_user_permission (user_id, permission_id);
+
