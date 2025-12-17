@@ -8,19 +8,13 @@ use PDO;
 
 final class UserModel
 {
-    private Database $db;
-
-    public function __construct(Database $db)
-    {
-        $this->db = $db;
-    }
+    public function __construct(private Database $db) {}
 
     public function findByEmail(string $email): ?array
     {
         $stmt = $this->db->pdo()->prepare('SELECT * FROM users WHERE email = :email LIMIT 1');
         $stmt->execute(['email' => $email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
         return $user ?: null;
     }
 
@@ -29,19 +23,14 @@ final class UserModel
         $stmt = $this->db->pdo()->prepare('SELECT * FROM users WHERE cpf = :cpf LIMIT 1');
         $stmt->execute(['cpf' => $cpf]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
         return $user ?: null;
     }
 
     public function findById(int $id): ?array
     {
-        $stmt = $this->db->pdo()->prepare(
-            'SELECT id, first_name, last_name, cpf, email, user_type
-             FROM users WHERE id = :id LIMIT 1'
-        );
+        $stmt = $this->db->pdo()->prepare('SELECT id, first_name, last_name, cpf, email, user_type FROM users WHERE id = :id LIMIT 1');
         $stmt->execute(['id' => $id]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
         return $user ?: null;
     }
 
@@ -49,7 +38,6 @@ final class UserModel
     {
         $sql = 'INSERT INTO users (first_name, last_name, cpf, email, user_type, password_hash)
                 VALUES (:first_name, :last_name, :cpf, :email, :user_type, :password_hash)';
-
         $stmt = $this->db->pdo()->prepare($sql);
         $stmt->execute([
             'first_name'    => $data['first_name'],
@@ -60,6 +48,6 @@ final class UserModel
             'password_hash' => $data['password_hash'],
         ]);
 
-        return (int) $this->db->pdo()->lastInsertId();
+        return (int)$this->db->pdo()->lastInsertId();
     }
 }
