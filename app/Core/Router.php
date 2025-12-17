@@ -20,6 +20,16 @@ final class Router
         $this->add('POST', $path, $handler, $middleware);
     }
 
+    public function put(string $path, $handler, array $middleware = []): void
+    {
+        $this->add('PUT', $path, $handler, $middleware);
+    }
+
+    public function delete(string $path, $handler, array $middleware = []): void
+    {
+        $this->add('DELETE', $path, $handler, $middleware);
+    }
+
     public function add(string $method, string $path, $handler, array $middleware = []): void
     {
         $key = strtoupper($method) . ' ' . $path;
@@ -32,13 +42,13 @@ final class Router
 
     public function dispatch(Request $req): void
     {
-        // Preflight deve encerrar
-        if ($req->method === 'OPTIONS') {
+        
+        if (strtoupper($req->method) === 'OPTIONS') {
             Response::json(['ok' => true], 200);
             return;
         }
 
-        $key = $req->method . ' ' . $req->path;
+        $key = strtoupper($req->method) . ' ' . $req->path;
 
         if (!isset($this->routes[$key])) {
             Response::json(['error' => 'NOT_FOUND', 'message' => 'Route not found'], 404);
@@ -46,20 +56,19 @@ final class Router
         }
 
         $route = $this->routes[$key];
-
         $middlewareStack = $route['middleware'];
 
-        // Handler final: sempre chama (Request, Response)
+        
         $finalHandler = function () use ($route, $req): void {
             $res = new Response();
 
             $callable = $this->normalizeHandler($route['handler']);
 
-            // chama controller/handler com (Request, Response)
+            
             call_user_func($callable, $req, $res);
         };
 
-        // Pipeline: middleware(Request $req, callable $next): void
+        
         $pipeline = array_reduce(
             array_reverse($middlewareStack),
             function (callable $next, callable $mw) use ($req): callable {
@@ -73,37 +82,34 @@ final class Router
         $pipeline();
     }
 
-    /**
-     * Normaliza handler para callable válido.
-     *
-     * Aceita:
-     * - Closure/callable
-     * - [Controller::class, 'method'] (instancia)
-     * - [new Controller(), 'method']
-     *
-     * @return callable
-     */
-    private function normalizeHandler($handler): callable
-    {
-        // [ClassName::class, 'method']
-        if (is_array($handler) && isset($handler[0], $handler[1]) && is_string($handler[0])) {
-            $class = $handler[0];
-            $method = $handler[1];
+private function normalizeHandler($handler): callable
+{
+    if (is_array($handler) && isset($handler[0], $handler[1]) && is_string($handler[0])) {
+        $class = $handler[0];
+        $method = $handler[1];
 
+        try {
+            if (!class_exists($class)) {
+                throw new \RuntimeException("Classe não existe: {$class}");
+            }
+            
             $obj = new $class();
-
+            
             if (!is_callable([$obj, $method])) {
                 throw new \RuntimeException("Handler inválido: {$class}::{$method}");
             }
 
             return [$obj, $method];
+        } catch (\Throwable $e) {
+            error_log("Router error: " . $e->getMessage());
+            throw new \RuntimeException("Handler inválido: " . $e->getMessage());
         }
-
-        // callable direto (Closure, invokable, etc)
-        if (!is_callable($handler)) {
-            throw new \RuntimeException("Handler inválido para rota.");
-        }
-
-        return $handler;
     }
+
+    if (!is_callable($handler)) {
+        throw new \RuntimeException("Handler inválido para rota.");
+    }
+
+    return $handler;
+}
 }
