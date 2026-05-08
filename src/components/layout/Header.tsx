@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Bell, ChevronRight, Menu, Clock, AlertTriangle, FileCheck } from "lucide-react";
-import api from "../../services/api"; 
+import { useAuth } from "../../context/AuthContext";
+
 const notificationsData = [
   { id: 1, type: "deadline", message: "Prazo da Ação Condomínio X está expirando em 3 dias.", time: "5 min atrás", read: false, linkTo: "/acoes-legais", relatedId: 2 },
   { id: 2, type: "assignment", message: "Você foi atribuído à nova demanda do Condomínio Y.", time: "2 horas atrás", read: false, linkTo: "/acoes-legais", relatedId: 4 },
@@ -11,22 +12,13 @@ const notificationsData = [
   { id: 6, type: "completed", message: "O pagamento dos honorários de Julho foi confirmado.", time: "4 dias atrás", read: true, linkTo: "/acoes-legais", relatedId: 6 },
 ];
 
-type MeResponse = {
-  ok: boolean;
-  data?: { user?: { first_name?: string; last_name?: string } };
-};
-
 const NotificationsDropdown = () => {
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case "deadline":
-        return <AlertTriangle className="w-5 h-5 text-red-500" />;
-      case "assignment":
-        return <FileCheck className="w-5 h-5 text-blue-500" />;
-      case "completed":
-        return <FileCheck className="w-5 h-5 text-green-500" />;
-      default:
-        return <Bell className="w-5 h-5 text-gray-500" />;
+      case "deadline": return <AlertTriangle className="w-5 h-5 text-red-500" />;
+      case "assignment": return <FileCheck className="w-5 h-5 text-blue-500" />;
+      case "completed": return <FileCheck className="w-5 h-5 text-green-500" />;
+      default: return <Bell className="w-5 h-5 text-gray-500" />;
     }
   };
 
@@ -68,8 +60,9 @@ const Header: React.FC<{ onMenuClick?: () => void }> = ({ onMenuClick }) => {
   const location = useLocation();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const notificationsRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
 
-  const [userName, setUserName] = useState<string>(""); 
+  const userName = user ? `${user.first_name} ${user.last_name}`.trim() : "Visitante";
 
   const getPageTitle = (pathname: string) => {
     const routes: Record<string, string> = {
@@ -87,7 +80,6 @@ const Header: React.FC<{ onMenuClick?: () => void }> = ({ onMenuClick }) => {
     return routes[pathname] || "Página";
   };
 
-  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
@@ -96,24 +88,6 @@ const Header: React.FC<{ onMenuClick?: () => void }> = ({ onMenuClick }) => {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  
-  useEffect(() => {
-    const loadMe = async () => {
-      try {
-        const { data } = await api.get<MeResponse>("/api/auth/me");
-        const first = data?.data?.user?.first_name?.trim() || "";
-        const last = data?.data?.user?.last_name?.trim() || "";
-        const full = `${first} ${last}`.trim();
-        setUserName(full);
-      } catch {
-        
-        setUserName("");
-      }
-    };
-
-    loadMe();
   }, []);
 
   return (
@@ -146,7 +120,7 @@ const Header: React.FC<{ onMenuClick?: () => void }> = ({ onMenuClick }) => {
           <Link to="/perfil" className="flex items-center space-x-3 cursor-pointer p-1 rounded-lg hover:bg-gray-100">
             <img src="/user.png" alt="Foto do usuário" className="w-8 h-8 rounded-full object-cover" />
             <span className="text-text-primary font-medium hidden sm:block">
-              {userName || "Visitante"}
+              {userName}
             </span>
           </Link>
         </div>
