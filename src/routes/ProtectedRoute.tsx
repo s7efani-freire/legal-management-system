@@ -7,8 +7,10 @@ type Props = {
 };
 
 const ProtectedRoute: React.FC<Props> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
+
+  if (isLoading) return null; // aguarda o mock carregar
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location }} />;
