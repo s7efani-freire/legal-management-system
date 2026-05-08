@@ -1,5 +1,4 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import api from '../services/api';
 
 interface User {
   id: number;
@@ -22,42 +21,31 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Usuário fake para desenvolvimento
+const MOCK_USER: User = {
+  id: 1,
+  first_name: 'Dev',
+  last_name: 'Local',
+  email: 'dev@local.com',
+  user_type: 'admin',
+  permissions: [],
+};
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
 
   const isAuthenticated = !!user;
 
-const login = (userData: User) => {
-  setUser(userData);
-};
-
+  const login = (userData: User) => setUser(userData);
 
   const refreshMe = async () => {
-    try {
-      const { data } = await api.get('/api/auth/me');
-      const me = data?.data?.user ?? null;
-
-      if (me) {
-        // Se o /me não estiver retornando permissions, caímos num array vazio
-        setUser({
-          ...me,
-          permissions: me.permissions ?? [],
-        });
-      } else {
-        setUser(null);
-      }
-    } catch {
-      setUser(null);
-    }
+    // TODO: trocar por chamada real à API quando o backend estiver pronto
+    setUser(MOCK_USER);
   };
 
   const logout = async () => {
-    try {
-      await api.post('/api/auth/logout');
-    } finally {
-      setUser(null);
-    }
+    setUser(null);
   };
 
   useEffect(() => {
@@ -67,16 +55,11 @@ const login = (userData: User) => {
     })();
   }, []);
 
-  const value: AuthContextType = {
-    isAuthenticated,
-    user,
-    isLoading,
-    login,
-    refreshMe,
-    logout,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ isAuthenticated, user, isLoading, login, refreshMe, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {
