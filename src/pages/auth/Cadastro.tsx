@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../../services/api";
 
-const logoUrl = "/logo-square-blue.png";
-
 const inputClass =
   "w-full bg-transparent px-1 py-2 border-0 border-b border-gray-400 " +
   "focus:outline-none focus:ring-0 focus:border-primary " +
@@ -43,12 +41,10 @@ const Cadastro: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-
     if (name === "cpf") {
       setFormData((prev) => ({ ...prev, cpf: maskCpf(value) }));
       return;
     }
-
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -107,7 +103,7 @@ const Cadastro: React.FC = () => {
     <div className="min-h-screen w-full flex items-center justify-center bg-primary px-4">
       <div className="w-full max-w-xl bg-background rounded-xl shadow-lg p-8 sm:p-10">
         <div className="flex flex-col items-center mb-8">
-          <img src={logoUrl} alt="Dias & Nunes" className="w-32 mb-4" />
+          <img src="/logo.png" alt="Logo" className="w-32 mb-4" />
           <h1 className="text-2xl font-bold text-text-secondary">
             Criar conta
           </h1>
@@ -117,45 +113,22 @@ const Cadastro: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label className="text-sm font-medium">Nome*</label>
-              <input
-                type="text"
-                name="nome"
-                value={formData.nome}
-                onChange={handleChange}
-                className={inputClass}
-              />
+              <input type="text" name="nome" value={formData.nome} onChange={handleChange} className={inputClass} />
             </div>
 
             <div>
               <label className="text-sm font-medium">Sobrenome*</label>
-              <input
-                type="text"
-                name="sobrenome"
-                value={formData.sobrenome}
-                onChange={handleChange}
-                className={inputClass}
-              />
+              <input type="text" name="sobrenome" value={formData.sobrenome} onChange={handleChange} className={inputClass} />
             </div>
 
             <div>
               <label className="text-sm font-medium">CPF*</label>
-              <input
-                type="text"
-                name="cpf"
-                value={formData.cpf}
-                onChange={handleChange}
-                className={inputClass}
-              />
+              <input type="text" name="cpf" value={formData.cpf} onChange={handleChange} className={inputClass} />
             </div>
 
             <div>
               <label className="text-sm font-medium">Tipo de Usuário*</label>
-              <select
-                name="tipoUsuario"
-                value={formData.tipoUsuario}
-                onChange={handleChange}
-                className={getSelectClass(formData.tipoUsuario)}
-              >
+              <select name="tipoUsuario" value={formData.tipoUsuario} onChange={handleChange} className={getSelectClass(formData.tipoUsuario)}>
                 <option value="">Selecione</option>
                 <option value="ADMIN">Administrador</option>
                 <option value="LAWYER">Advogado</option>
@@ -165,47 +138,25 @@ const Cadastro: React.FC = () => {
 
             <div className="sm:col-span-2">
               <label className="text-sm font-medium">Email*</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className={inputClass}
-              />
+              <input type="email" name="email" value={formData.email} onChange={handleChange} className={inputClass} />
             </div>
 
             <div>
               <label className="text-sm font-medium">Senha*</label>
-              <input
-                type="password"
-                name="senha"
-                value={formData.senha}
-                onChange={handleChange}
-                className={inputClass}
-              />
+              <input type="password" name="senha" value={formData.senha} onChange={handleChange} className={inputClass} />
             </div>
 
             <div>
               <label className="text-sm font-medium">Confirmar senha*</label>
-              <input
-                type="password"
-                name="confirmarSenha"
-                value={formData.confirmarSenha}
-                onChange={handleChange}
-                className={inputClass}
-              />
+              <input type="password" name="confirmarSenha" value={formData.confirmarSenha} onChange={handleChange} className={inputClass} />
             </div>
           </div>
 
           {error && (
-            <div className="text-red-600 bg-red-100 p-3 rounded-md text-center">
-              {error}
-            </div>
+            <div className="text-red-600 bg-red-100 p-3 rounded-md text-center">{error}</div>
           )}
           {success && (
-            <div className="text-green-600 bg-green-100 p-3 rounded-md text-center">
-              {success}
-            </div>
+            <div className="text-green-600 bg-green-100 p-3 rounded-md text-center">{success}</div>
           )}
 
           <button
@@ -218,9 +169,7 @@ const Cadastro: React.FC = () => {
 
           <p className="text-center text-sm mt-4">
             Já possui cadastro?{" "}
-            <Link to="/login" className="text-primary font-semibold">
-              Faça login
-            </Link>
+            <Link to="/login" className="text-primary font-semibold">Faça login</Link>
           </p>
         </form>
       </div>
