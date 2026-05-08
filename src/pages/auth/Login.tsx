@@ -1,31 +1,22 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import api from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 
 const Login: React.FC = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ 1) NOVO
+  const location = useLocation();
   const { login } = useAuth();
 
-  // ✅ 2) NOVO: pega para onde o usuário queria ir antes de cair no login
   const from = (location.state as any)?.from?.pathname || "/";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,18 +25,9 @@ const Login: React.FC = () => {
     setError(null);
 
     try {
-      const { data } = await api.post("/api/auth/login", formData);
-
-      const user = data?.data?.user;
-
-      if (!data?.ok || !user) {
-        throw new Error(data?.message || "Falha no login.");
-      }
-
-      // Sessão PHP -> não precisa token
-      login(user, null);
-
-      // ✅ 3) TROCA AQUI: antes era navigate("/")
+      // TODO: chamar API real quando o backend Laravel estiver pronto
+      // const { data } = await api.post("/api/auth/login", formData);
+      // login(data.data.user);
       navigate(from, { replace: true });
     } catch (err: any) {
       const message =
@@ -61,11 +43,7 @@ const Login: React.FC = () => {
   return (
     <div className="w-full">
       <div className="flex justify-center mb-6 md:mb-8">
-        <img
-          src="/logo-square-blue.png"
-          alt="Dias & Nunes"
-          className="w-32 md:w-44"
-        />
+        <img src="/logo.png" alt="Logo" className="w-32 md:w-44" />
       </div>
 
       <h1 className="text-2xl md:text-3xl font-bold text-primary-dark mb-6 md:mb-8 text-center">
@@ -74,10 +52,7 @@ const Login: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
         <div>
-          <label
-            htmlFor="email"
-            className="block text-sm md:text-base font-medium text-primary-dark mb-2"
-          >
+          <label htmlFor="email" className="block text-sm md:text-base font-medium text-primary-dark mb-2">
             Email
           </label>
           <input
@@ -93,13 +68,9 @@ const Login: React.FC = () => {
         </div>
 
         <div className="relative">
-          <label
-            htmlFor="password"
-            className="block text-sm md:text-base font-medium text-primary-dark mb-2"
-          >
+          <label htmlFor="password" className="block text-sm md:text-base font-medium text-primary-dark mb-2">
             Senha
           </label>
-
           <input
             type={showPassword ? "text" : "password"}
             id="password"
@@ -110,7 +81,6 @@ const Login: React.FC = () => {
             className="w-full px-4 py-2 md:py-3 border-b border-primary-dark focus:outline-none focus:border-primary-dark text-primary-dark text-sm md:text-base placeholder-primary-dark/70 placeholder:italic bg-transparent pr-10"
             required
           />
-
           <button
             type="button"
             className="absolute right-3 bottom-2 text-primary-dark"
@@ -121,9 +91,7 @@ const Login: React.FC = () => {
         </div>
 
         {error && (
-          <div className="text-center text-red-600 bg-red-100 p-3 rounded-md">
-            {error}
-          </div>
+          <div className="text-center text-red-600 bg-red-100 p-3 rounded-md">{error}</div>
         )}
 
         <div className="pt-4 md:pt-6">
@@ -140,10 +108,7 @@ const Login: React.FC = () => {
       <div className="text-center mt-4 md:mt-6">
         <p className="text-xs md:text-sm text-primary-dark">
           Ainda não tem uma conta?{" "}
-          <Link
-            to="/cadastro"
-            className="text-primary-dark hover:underline font-medium"
-          >
+          <Link to="/cadastro" className="text-primary-dark hover:underline font-medium">
             Cadastre-se
           </Link>
         </p>
