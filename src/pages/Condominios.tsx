@@ -14,23 +14,12 @@ import {
 import { Link } from "react-router-dom";
 import DetailsPopup, { DetailItem } from "../components/ui/DetailsPopup";
 import Button from "../components/ui/Button";
-import api from "../services/api"
+import { MOCK_CONDOMINIOS, MockCondominio } from "../data/mockCondominios";
 
-type CondominiumApi = {
-  id: number;
-  corporate_name: string;
-  trade_name: string | null;
-  cnpj: string | null;
-  email: string | null;
-  phone: string | null;
-  zip_code: string | null;
-  street: string | null;
-  number: number | null;
-  city: string | null;
-  state: string | null;
-  created_at?: string | null;
-  condo_type?: string | null;
-};
+type CondominiumApi = MockCondominio;
+
+const matchesFilter = (value: string | null, term?: string) =>
+  !term || (value ?? "").toLowerCase().includes(term.toLowerCase());
 
 const Condominios: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -45,7 +34,7 @@ const Condominios: React.FC = () => {
   const [filterCnpj, setFilterCnpj] = useState("");
   const [filterCity, setFilterCity] = useState("");
 
-  const fetchCondominios = async (params?: {
+  const fetchCondominios = (params?: {
     name?: string;
     cnpj?: string;
     city?: string;
@@ -53,29 +42,15 @@ const Condominios: React.FC = () => {
     setLoading(true);
     setError(null);
 
-    try {
-  
-      const { data } = await api.get("/api/condominiums", { params });
+    const filtered = MOCK_CONDOMINIOS.filter(
+      (c) =>
+        matchesFilter(c.trade_name ?? c.corporate_name, params?.name) &&
+        matchesFilter(c.cnpj, params?.cnpj) &&
+        matchesFilter(c.city, params?.city)
+    );
 
-  
-      const list = Array.isArray(data?.data)
-        ? data.data
-        : Array.isArray(data)
-        ? data
-        : [];
-
-      setRows(list);
-    } catch (e: any) {
-      console.error(e);
-
-      const message =
-        e?.response?.data?.message ||
-        "Não foi possível carregar a lista de condomínios.";
-
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
+    setRows(filtered);
+    setLoading(false);
   };
 
   useEffect(() => {

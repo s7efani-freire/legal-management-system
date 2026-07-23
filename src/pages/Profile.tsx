@@ -1,9 +1,9 @@
 import React, { useEffect, useState, ChangeEvent, FormEvent } from "react";
 import PageContainer from "../components/ui/PageContainer";
 import { Camera } from "lucide-react";
-import api from "../services/api"
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
+import { useAuth } from "../context/AuthContext";
 
 type MeUser = {
   id: number;
@@ -15,6 +15,7 @@ type MeUser = {
 };
 
 const Profile: React.FC = () => {
+  const { user: authUser, logout } = useAuth();
   const [activeTab, setActiveTab] = useState<"info" | "password">("info");
 
   const [me, setMe] = useState<MeUser | null>(null);
@@ -33,7 +34,6 @@ const Profile: React.FC = () => {
     confirm: "",
   });
 
-  const [loadingMe, setLoadingMe] = useState(true);
   const [savingInfo, setSavingInfo] = useState(false);
   const [savingPass, setSavingPass] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
@@ -43,108 +43,54 @@ const Profile: React.FC = () => {
 
   const fullName = me ? `${me.first_name} ${me.last_name}`.trim() : "";
 
-  const buildPhotoUrl = (photoPath: string | null) => {
-    if (!photoPath) return "/user.png";
-    const base = import.meta.env.VITE_API_URL || "http://localhost:8000";
-    return `${base}${photoPath}`;
-  };
-
+  // Sem backend nesta versão do projeto — os dados vêm do usuário mockado da sessão.
   useEffect(() => {
-    const loadMe = async () => {
-      setLoadingMe(true);
-      setError(null);
-      try {
-        const { data } = await api.get("/api/profile/me");
-        const user: MeUser = data?.data?.user;
+    if (!authUser) return;
 
-        setMe(user);
-        setUserData({
-          first_name: user.first_name ?? "",
-          last_name: user.last_name ?? "",
-          email: user.email ?? "",
-        });
-        setProfileImage(buildPhotoUrl(user.profile_photo_path));
-      } catch (err: any) {
-        setError(err?.response?.data?.message || "Não foi possível carregar seu perfil.");
-      } finally {
-        setLoadingMe(false);
-      }
+    const user: MeUser = {
+      id: authUser.id,
+      first_name: authUser.first_name,
+      last_name: authUser.last_name,
+      email: authUser.email,
+      user_type: authUser.user_type,
+      profile_photo_path: null,
     };
 
-    loadMe();
-  }, []);
+    setMe(user);
+    setUserData({
+      first_name: user.first_name ?? "",
+      last_name: user.last_name ?? "",
+      email: user.email ?? "",
+    });
+  }, [authUser]);
 
 const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0];
   if (!file) return;
-
-  console.log("📤 Iniciando upload com compressão");
 
   if (!file.type.startsWith('image/')) {
     setError("Selecione uma imagem");
     return;
   }
 
-  const previewUrl = URL.createObjectURL(file);
-  setProfileImage(previewUrl);
-  
-  const previousImage = profileImage;
   setError(null);
   setSuccess(null);
 
   try {
     setUploadingPhoto(true);
 
+    // Sem backend nesta versão: a imagem só é mantida localmente, na sessão atual.
     let fileToUpload = file;
     if (file.size > 2 * 1024 * 1024) {
-      console.log("⚡ Comprimindo imagem de", (file.size / 1024 / 1024).toFixed(2), "MB");
       fileToUpload = await compressImage(file);
-      console.log("✅ Comprimido para", (fileToUpload.size / 1024 / 1024).toFixed(2), "MB");
     }
 
-    const formData = new FormData();
-    formData.append('photo', fileToUpload);
-
-    const response = await api.post('/api/profile/photo', formData);
-    
-    console.log("✅ Upload bem-sucedido:", response.data);
-    
-    if (response.data?.ok && response.data?.data?.user) {
-      const user = response.data.data.user;
-      if (user.profile_photo_path) {
-
-        let photoUrl = user.profile_photo_path;
-        if (!photoUrl.startsWith('http')) {
-          if (!photoUrl.startsWith('/')) photoUrl = '/' + photoUrl;
-          photoUrl = 'http://localhost:8000' + photoUrl;
-        }
-        setProfileImage(photoUrl);
-        
-        if (me) {
-          setMe({
-            ...me,
-            profile_photo_path: user.profile_photo_path
-          });
-        }
-      }
-    }
-    
-    setSuccess(response.data?.message || "Foto atualizada!");
-    URL.revokeObjectURL(previewUrl);
-
-  } catch (err: any) {
-    console.error("❌ Erro:", err);
-    
-    if (err.response?.status === 422 && 
-        err.response?.data?.message?.includes('grande')) {
-      setError("Arquivo muito grande mesmo após compressão. Tente uma imagem menor.");
-    } else {
-      setError(err.response?.data?.message || "Erro no upload");
-    }
-    
-    setProfileImage(previousImage);
-    URL.revokeObjectURL(previewUrl);
-    
+    const previewUrl = URL.createObjectURL(fileToUpload);
+    setProfileImage(previewUrl);
+    setSuccess("Foto atualizada!");
+  } catch (err) {
+    console.error("Erro ao processar imagem:", err);
+    setError("Não foi possível processar essa imagem. Tente outra.");
   } finally {
     setUploadingPhoto(false);
     if (e.target) e.target.value = "";
@@ -221,7 +167,7 @@ const compressImage = (file: File, maxWidth = 1200, quality = 0.7): Promise<File
     setPasswords((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSaveInfo = async (e: FormEvent) => {
+  const handleSaveInfo = (e: FormEvent) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
@@ -235,25 +181,23 @@ const compressImage = (file: File, maxWidth = 1200, quality = 0.7): Promise<File
       return;
     }
 
-    try {
-      setSavingInfo(true);
-      const { data } = await api.put("/api/profile", {
-        first_name: userData.first_name.trim(),
-        last_name: userData.last_name.trim(),
-        email: userData.email.trim(),
-      });
-
-      const user: MeUser = data?.data?.user;
-      setMe(user);
-      setSuccess(data?.message || "Dados atualizados com sucesso.");
-    } catch (err: any) {
-      setError(err?.response?.data?.message || "Falha ao atualizar seus dados.");
-    } finally {
-      setSavingInfo(false);
-    }
+    // Sem backend nesta versão: os dados só são atualizados na sessão atual.
+    setSavingInfo(true);
+    setMe((prev) =>
+      prev
+        ? {
+            ...prev,
+            first_name: userData.first_name.trim(),
+            last_name: userData.last_name.trim(),
+            email: userData.email.trim(),
+          }
+        : prev
+    );
+    setSuccess("Dados atualizados com sucesso.");
+    setSavingInfo(false);
   };
 
-  const handleChangePassword = async (e: FormEvent) => {
+  const handleChangePassword = (e: FormEvent) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
@@ -267,31 +211,18 @@ const compressImage = (file: File, maxWidth = 1200, quality = 0.7): Promise<File
       return;
     }
 
-    try {
-      setSavingPass(true);
-      const { data } = await api.put("/api/profile/password", {
-        current_password: passwords.current,
-        new_password: passwords.new,
-      });
-
-      setSuccess(data?.message || "Senha alterada com sucesso.");
-      setPasswords({ current: "", new: "", confirm: "" });
-    } catch (err: any) {
-      setError(err?.response?.data?.message || "Falha ao alterar a senha.");
-    } finally {
-      setSavingPass(false);
-    }
+    // Sem backend nesta versão: não há senha real para alterar.
+    setSavingPass(true);
+    setSuccess("Senha alterada com sucesso.");
+    setPasswords({ current: "", new: "", confirm: "" });
+    setSavingPass(false);
   };
 
   const handleLogout = async () => {
     setError(null);
     setSuccess(null);
-    try {
-      await api.post("/api/auth/logout");
-      window.location.href = "/login";
-    } catch {
-      setError("Não foi possível sair agora. Tente novamente.");
-    }
+    await logout();
+    window.location.href = "/login";
   };
 
   return (
@@ -326,7 +257,7 @@ const compressImage = (file: File, maxWidth = 1200, quality = 0.7): Promise<File
             </div>
 
             <h2 className="text-xl font-bold text-text-secondary">
-              {loadingMe ? "Carregando..." : fullName || "Usuário"}
+              {fullName || "Usuário"}
             </h2>
 
             <p className="text-sm text-gray-500">

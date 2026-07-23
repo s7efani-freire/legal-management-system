@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import PageContainer from "../components/ui/PageContainer";
 import {
   Info,
@@ -16,7 +16,6 @@ import {
   Plus,
 } from "lucide-react";
 import DetailsPopup, { DetailItem } from "../components/ui/DetailsPopup";
-import api from "../services/api";
 import ConfirmDeletePopup from "../components/ui/ConfirmDeletePopup";
 import PermissionsEditorPopup, { PermissionItem } from "../components/ui/PermissionsEditorPopup";
 
@@ -211,10 +210,88 @@ const UserTable: React.FC<UserTableProps> = ({
   );
 };
 
+// Dados mockados — não há backend nesta versão do projeto.
+const MOCK_PERMISSIONS: PermissionItem[] = [
+  { id: 1, name: "dashboard.view", description: "Visualizar Área de Trabalho" },
+  { id: 2, name: "acoes_legais.view", description: "Visualizar Ações Legais" },
+  { id: 3, name: "honorarios.view", description: "Visualizar Honorários" },
+  { id: 4, name: "usuarios.view", description: "Visualizar Usuários" },
+  { id: 5, name: "condominios.view", description: "Visualizar Condomínios" },
+  { id: 6, name: "condominos.view", description: "Visualizar Condôminos" },
+  { id: 7, name: "cadastro.condominios", description: "Cadastrar Condomínios" },
+  { id: 8, name: "cadastro.condominos", description: "Cadastrar Condôminos" },
+  { id: 9, name: "cadastro.acoes_legais", description: "Cadastrar Ações Legais" },
+];
+
+const MOCK_GROUPS: Groups = {
+  LAWYER: [
+    {
+      id: 1,
+      nome: "Dr. Ramos",
+      email: "ramos@lexeco.adv.br",
+      role: "Advogado",
+      user_type: "LAWYER",
+      cadastradoEm: "10/01/2024",
+      ultimaAtualizacao: "02/06/2026",
+      permissions: ["dashboard.view", "acoes_legais.view", "honorarios.view", "cadastro.acoes_legais"],
+    },
+    {
+      id: 2,
+      nome: "Dra. Almeida",
+      email: "almeida@lexeco.adv.br",
+      role: "Advogada",
+      user_type: "LAWYER",
+      cadastradoEm: "22/03/2024",
+      ultimaAtualizacao: "15/05/2026",
+      permissions: ["dashboard.view", "acoes_legais.view", "cadastro.acoes_legais"],
+    },
+  ],
+  ACCOUNTING: [
+    {
+      id: 3,
+      nome: "Fernanda Costa",
+      email: "fernanda.costa@lexeco.adv.br",
+      role: "Financeiro",
+      user_type: "ACCOUNTING",
+      cadastradoEm: "05/02/2024",
+      ultimaAtualizacao: "20/06/2026",
+      permissions: ["dashboard.view", "honorarios.view"],
+    },
+  ],
+  MANAGER: [
+    {
+      id: 4,
+      nome: "Marcos Vieira",
+      email: "marcos.vieira@lexeco.adv.br",
+      role: "Gestor",
+      user_type: "MANAGER",
+      cadastradoEm: "18/11/2023",
+      ultimaAtualizacao: "01/07/2026",
+      permissions: [
+        "dashboard.view",
+        "condominios.view",
+        "condominos.view",
+        "cadastro.condominios",
+        "cadastro.condominos",
+      ],
+    },
+  ],
+  ADMIN: [
+    {
+      id: 5,
+      nome: "Ana Souza",
+      email: "ana.souza@lexeco.adv.br",
+      role: "Administradora",
+      user_type: "ADMIN",
+      cadastradoEm: "01/09/2023",
+      ultimaAtualizacao: "10/07/2026",
+      permissions: MOCK_PERMISSIONS.map((p) => p.name),
+    },
+  ],
+};
+
 const Usuarios: React.FC = () => {
-  const [groups, setGroups] = useState<Groups>({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string>("");
+  const [groups, setGroups] = useState<Groups>(MOCK_GROUPS);
 
   const allUsers = useMemo(() => Object.values(groups).flat(), [groups]);
 
@@ -232,7 +309,7 @@ const Usuarios: React.FC = () => {
   const [isPermsOpen, setIsPermsOpen] = useState(false);
   const [permsSaving, setPermsSaving] = useState(false);
   const [editingUserId, setEditingUserId] = useState<number | null>(null);
-  const [allPermissions, setAllPermissions] = useState<PermissionItem[]>([]);
+  const [allPermissions] = useState<PermissionItem[]>(MOCK_PERMISSIONS);
 
   const permissionDescByName = useMemo(() => {
     const m: Record<string, string> = {};
@@ -246,25 +323,6 @@ const Usuarios: React.FC = () => {
     if (!editingUserId) return null;
     return allUsers.find((u) => u.id === editingUserId) ?? null;
   }, [editingUserId, allUsers]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        setError("");
-
-        const usersResp = await api.get("/api/users");
-        setGroups(usersResp.data.groups ?? {});
-
-        const permsResp = await api.get("/api/permissions");
-        setAllPermissions(permsResp.data.data?.permissions ?? permsResp.data.permissions ?? []);
-      } catch (e: any) {
-        setError(e?.response?.data?.message ?? "Erro ao carregar usuários/permissões");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
 
   const handleOpenPopup = (id: number) => {
     const user = allUsers.find((u) => u.id === id);
@@ -303,31 +361,24 @@ const Usuarios: React.FC = () => {
     setIsConfirmOpen(true);
   };
 
-  const confirmDelete = async () => {
+  const confirmDelete = () => {
     if (!userIdToDelete) return;
 
-    try {
-      setDeleting(true);
+    setDeleting(true);
 
-      await api.post("/api/users/deactivate", { id: userIdToDelete });
+    setGroups((prev) => {
+      const next: Groups = {};
+      for (const [type, list] of Object.entries(prev)) {
+        next[type] = list.filter((u) => u.id !== userIdToDelete);
+      }
+      return next;
+    });
 
-      setGroups((prev) => {
-        const next: Groups = {};
-        for (const [type, list] of Object.entries(prev)) {
-          next[type] = list.filter((u) => u.id !== userIdToDelete);
-        }
-        return next;
-      });
+    if (isPopupOpen) handleClosePopup();
 
-      if (isPopupOpen) handleClosePopup();
-
-      setIsConfirmOpen(false);
-      setUserIdToDelete(null);
-    } catch (e: any) {
-      alert(e?.response?.data?.message ?? "Erro ao desativar usuário");
-    } finally {
-      setDeleting(false);
-    }
+    setIsConfirmOpen(false);
+    setUserIdToDelete(null);
+    setDeleting(false);
   };
 
   const openPermissionsEditor = (id: number) => {
@@ -335,49 +386,35 @@ const Usuarios: React.FC = () => {
     setIsPermsOpen(true);
   };
 
-  const savePermissions = async (nextSelected: string[]) => {
+  const savePermissions = (nextSelected: string[]) => {
     if (!editingUserId) return;
 
-    try {
-      setPermsSaving(true);
+    setPermsSaving(true);
 
-      await api.post("/api/users/permissions/set", {
-        id: editingUserId,
-        permissions: nextSelected,
-      });
-
-      setGroups((prev) => {
-        const next: Groups = {};
-        for (const [type, list] of Object.entries(prev)) {
-          next[type] = list.map((u) => {
-            if (u.id !== editingUserId) return u;
-            return { ...u, permissions: nextSelected };
-          });
-        }
-        return next;
-      });
-
-      if (isPopupOpen && editingUser) {
-        handleOpenPopup(editingUserId);
+    setGroups((prev) => {
+      const next: Groups = {};
+      for (const [type, list] of Object.entries(prev)) {
+        next[type] = list.map((u) => {
+          if (u.id !== editingUserId) return u;
+          return { ...u, permissions: nextSelected };
+        });
       }
+      return next;
+    });
 
-      setIsPermsOpen(false);
-      setEditingUserId(null);
-    } catch (e: any) {
-      alert(e?.response?.data?.message ?? "Erro ao salvar permissões");
-    } finally {
-      setPermsSaving(false);
+    if (isPopupOpen && editingUser) {
+      handleOpenPopup(editingUserId);
     }
+
+    setIsPermsOpen(false);
+    setEditingUserId(null);
+    setPermsSaving(false);
   };
 
   return (
     <div className="relative">
       <PageContainer title="Usuários">
-        {loading && <div className="text-sm text-gray-700">Carregando...</div>}
-        {error && <div className="text-sm text-red-600">{error}</div>}
-
-        {!loading && !error && (
-          <div className="space-y-10">
+        <div className="space-y-10">
             <UserTable
               title="Advogados"
               users={groups["LAWYER"] ?? []}
@@ -414,8 +451,7 @@ const Usuarios: React.FC = () => {
               hideEdit
               hideDelete
             />
-          </div>
-        )}
+        </div>
       </PageContainer>
 
       <DetailsPopup isOpen={isPopupOpen} onClose={handleClosePopup} title={popupTitle} details={selectedDetails} />

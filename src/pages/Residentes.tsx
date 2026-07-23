@@ -4,7 +4,6 @@ import { Info, Trash2, Plus, Building, Mail, Phone, FileText } from "lucide-reac
 import { Link } from "react-router-dom";
 import DetailsPopup, { DetailItem } from "../components/ui/DetailsPopup";
 import Button from "../components/ui/Button";
-import api from "../services/api";
 
 interface Dwelling {
   unit_number: string;
@@ -23,6 +22,53 @@ interface ResidentRow {
   dwellings: Dwelling[];
 }
 
+// Dados mockados — não há backend nesta versão do projeto.
+const MOCK_RESIDENTS: ResidentRow[] = [
+  {
+    id: 1,
+    first_name: "João",
+    last_name: "da Silva Pereira",
+    document_number: "123.456.789-00",
+    email: "joao.pereira@email.com",
+    phone: "(11) 98888-1234",
+    phone_type: "MOBILE",
+    dwellings: [{ unit_number: "101", building_block: "A", condominium: "Jardim das Palmeiras" }],
+  },
+  {
+    id: 2,
+    first_name: "Maria",
+    last_name: "Santos Oliveira",
+    document_number: "234.567.890-11",
+    email: "maria.santos@email.com",
+    phone: "(11) 97777-2345",
+    phone_type: "MOBILE",
+    dwellings: [{ unit_number: "1102", building_block: null, condominium: "Blue Sky" }],
+  },
+  {
+    id: 3,
+    first_name: "Carlos",
+    last_name: "Eduardo Montenegro",
+    document_number: "345.678.901-22",
+    email: "carlos.montenegro@email.com",
+    phone: "(21) 96666-3456",
+    phone_type: "MOBILE",
+    dwellings: [{ unit_number: "702", building_block: "B", condominium: "Villa das Flores" }],
+  },
+  {
+    id: 4,
+    first_name: "Larissa",
+    last_name: "Mendes Rocha",
+    document_number: "456.789.012-33",
+    email: "larissa.mendes@email.com",
+    phone: "(31) 95555-4567",
+    phone_type: "MOBILE",
+    dwellings: [{ unit_number: "15", building_block: null, condominium: "Monte Verde" }],
+  },
+];
+
+const matchesFilter = (value: string | null | undefined, term?: string) =>
+  !term || (value ?? "").toLowerCase().includes(term.toLowerCase());
+
 const Condominos: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<DetailItem[]>([]);
@@ -36,7 +82,7 @@ const Condominos: React.FC = () => {
   const [filterDoc, setFilterDoc] = useState("");
   const [filterCondo, setFilterCondo] = useState("");
 
-  const fetchResidents = async (params?: {
+  const fetchResidents = (params?: {
     name?: string;
     document?: string;
     condominium?: string;
@@ -44,27 +90,16 @@ const Condominos: React.FC = () => {
     setLoading(true);
     setError(null);
 
-    try {
-      const { data } = await api.get("/api/residents", { params });
+    const filtered = MOCK_RESIDENTS.filter(
+      (r) =>
+        matchesFilter(`${r.first_name} ${r.last_name}`, params?.name) &&
+        matchesFilter(r.document_number, params?.document) &&
+        (!params?.condominium ||
+          r.dwellings.some((d) => matchesFilter(d.condominium, params.condominium)))
+    );
 
-      const list = Array.isArray(data?.data)
-        ? data.data
-        : Array.isArray(data)
-        ? data
-        : [];
-
-      setRows(list);
-    } catch (e: any) {
-      console.error(e);
-
-      const message =
-        e?.response?.data?.message ||
-        "Não foi possível carregar a lista de condôminos.";
-
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
+    setRows(filtered);
+    setLoading(false);
   };
 
   useEffect(() => {

@@ -6,20 +6,14 @@ import api from "../../services/api"; // ajuste o caminho se necessário
 import Input from "../../components/ui/Input";
 import Select from "../../components/ui/Select";
 import Button from "../../components/ui/Button";
+import { MOCK_CONDOMINIOS, MOCK_UNIT_OPTIONS, MockCondominio, CondoTypeId } from "../../data/mockCondominios";
 
 const estados = [
   "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG",
   "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
 ];
 
-type CondoTypeId = "APTO_BLOCO" | "APTO_SIMPLES" | "CASAS_RUA" | "CASAS_SIMPLES";
-
-type Condominium = {
-  id: number;
-  trade_name?: string;
-  corporate_name?: string;
-  condo_type: CondoTypeId;
-};
+type Condominium = MockCondominio;
 
 type UnitFieldKey = "block" | "tower" | "floor" | "street" | "number";
 
@@ -73,8 +67,6 @@ const initialFormData = {
   unidades: [emptyUnit()],
 };
 
-type UnitsOptionsResponse = Partial<Record<UnitFieldKey, string[] | number[]>>;
-
 type ApiEnvelope<T> = {
   ok?: boolean;
   message?: string;
@@ -95,33 +87,10 @@ const CadastroCondominos: React.FC = () => {
   const [formData, setFormData] = useState(initialFormData);
 
   useEffect(() => {
-    const loadCondominiums = async () => {
-      setLoadingCondominiums(true);
-      setError(null);
-
-      try {
-        const { data } = await api.get<ApiEnvelope<Condominium[]> | Condominium[]>("/api/condominiums");
-
-        const rows =
-          Array.isArray(data)
-            ? data
-            : Array.isArray((data as any)?.data)
-              ? (data as any).data
-              : [];
-
-        setCondominiums(rows);
-      } catch (e: any) {
-        console.error(e);
-        const msg =
-          e?.response?.data?.message ||
-          "Não foi possível carregar a lista de condomínios.";
-        setError(msg);
-      } finally {
-        setLoadingCondominiums(false);
-      }
-    };
-
-    loadCondominiums();
+    // Sem backend nesta versão do projeto — lista vem de dados mockados.
+    setLoadingCondominiums(true);
+    setCondominiums(MOCK_CONDOMINIOS);
+    setLoadingCondominiums(false);
   }, []);
 
   const getCondoById = (idStr: string) => {
@@ -156,31 +125,14 @@ const CadastroCondominos: React.FC = () => {
     }
   };
 
-  const ensureUnitOptionsLoaded = async (condominiumId: number) => {
+  const ensureUnitOptionsLoaded = (condominiumId: number) => {
     if (unitOptionsByCondo[condominiumId]) return;
 
-    try {
-      const { data } = await api.get<ApiEnvelope<UnitsOptionsResponse> | UnitsOptionsResponse>(
-        "/api/units/options",
-        { params: { condominium_id: condominiumId } }
-      );
-
-      const payload = (data as any)?.data ?? data;
-
-      setUnitOptionsByCondo((prev) => ({
-        ...prev,
-        [condominiumId]: {
-          block: (payload?.block ?? []) as string[],
-          tower: (payload?.tower ?? []) as string[],
-          floor: (payload?.floor ?? []) as string[],
-          street: (payload?.street ?? []) as string[],
-          number: (payload?.number ?? []).map(String),
-        },
-      }));
-    } catch (e) {
-      console.error(e);
-      setUnitOptionsByCondo((prev) => ({ ...prev, [condominiumId]: {} }));
-    }
+    // Sem backend nesta versão do projeto — sugestões vêm de dados mockados.
+    setUnitOptionsByCondo((prev) => ({
+      ...prev,
+      [condominiumId]: MOCK_UNIT_OPTIONS[condominiumId] ?? {},
+    }));
   };
 
   type UnitFieldName = keyof UnitForm;
