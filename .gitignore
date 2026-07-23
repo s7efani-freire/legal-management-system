@@ -26,7 +26,3 @@ dist-ssr
 
 # Environment
 .env
-
-# PHP / Composer
-vendor/
-app/config/database.php
