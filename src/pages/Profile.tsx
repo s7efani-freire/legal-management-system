@@ -1,6 +1,6 @@
 import React, { useEffect, useState, ChangeEvent, FormEvent } from "react";
 import PageContainer from "../components/ui/PageContainer";
-import { Camera } from "lucide-react";
+import { Camera, LogOut } from "lucide-react";
 import api from "../services/api"
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
@@ -337,8 +337,9 @@ const compressImage = (file: File, maxWidth = 1200, quality = 0.7): Promise<File
             <button
               type="button"
               onClick={handleLogout}
-              className="mt-4 w-full text-red-600 font-medium hover:underline"
+              className="mt-4 w-full flex items-center justify-center gap-2 text-red-600 font-medium hover:underline"
             >
+              <LogOut className="w-4 h-4" />
               Sair (Logout)
             </button>
           </div>
