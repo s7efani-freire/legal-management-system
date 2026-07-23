@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth, MOCK_USER } from "../../context/AuthContext";
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -19,25 +19,14 @@ const Login: React.FC = () => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
 
-    try {
-      // TODO: chamar API real quando o backend Laravel estiver pronto
-      // const { data } = await api.post("/api/auth/login", formData);
-      // login(data.data.user);
-      navigate(from, { replace: true });
-    } catch (err: any) {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Não foi possível conectar ao servidor. Tente novamente.";
-      setError(message);
-    } finally {
-      setIsLoading(false);
-    }
+    // Login de demonstração — sem backend nesta versão, qualquer credencial é aceita.
+    login(MOCK_USER);
+    navigate(from, { replace: true });
   };
 
   return (
@@ -49,6 +38,13 @@ const Login: React.FC = () => {
       <h1 className="text-2xl md:text-3xl font-bold text-primary-dark mb-6 md:mb-8 text-center">
         Conecte-se
       </h1>
+
+      <div className="mb-6 rounded-md border border-secondary/40 bg-secondary/10 px-4 py-3 text-xs md:text-sm text-primary-dark">
+        <p className="font-semibold">Ambiente de demonstração</p>
+        <p>
+          Use o e-mail <span className="font-semibold">{MOCK_USER.email}</span> e qualquer senha para entrar.
+        </p>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
         <div>

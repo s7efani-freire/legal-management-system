@@ -21,13 +21,13 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Usuário fake para desenvolvimento
-const MOCK_USER: User = {
-  id: 1,
-  first_name: 'Dev',
-  last_name: 'Local',
-  email: 'dev@local.com',
-  user_type: 'admin',
+// Usuário fake para o login de demonstração — não há backend nesta versão do projeto.
+export const MOCK_USER: User = {
+  id: 5,
+  first_name: 'Ana',
+  last_name: 'Souza',
+  email: 'ana.souza@lexeco.adv.br',
+  user_type: 'ADMIN',
   permissions: [],
 };
 
@@ -40,7 +40,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = (userData: User) => setUser(userData);
 
   const refreshMe = async () => {
-    // TODO: trocar por chamada real à API quando o backend estiver pronto
     setUser(MOCK_USER);
   };
 
@@ -49,10 +48,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    (async () => {
-      await refreshMe();
-      setIsLoading(false);
-    })();
+    // Sem backend nesta versão: começa deslogado, a tela de login decide quando autenticar.
+    setIsLoading(false);
   }, []);
 
   return (
