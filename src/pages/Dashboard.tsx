@@ -33,10 +33,10 @@ interface BoardData {
 // --- DADOS INICIAIS DO KANBAN ---
 const initialBoardData: BoardData = {
     tasks: {
-      'task-1': { id: 'task-1', title: 'Protocolar Petição Inicial', type: 'Ação Judicial', condominio: 'Condomínio X', prazo: '28/08/2025', assignee: { name: 'Dr. Dias' }, numeroProcesso: '0012345-67.2025.8.05.0001', descricao: 'Petição referente à cobrança de taxas condominiais em atraso da unidade 101.'},
-      'task-2': { id: 'task-2', title: 'Notificação Extrajudicial', type: 'Extrajudicial', condominio: 'Condomínio Y', prazo: '18/09/2025', assignee: { name: 'Dr. Nunes' }, descricao: 'Enviar notificação sobre barulho excessivo após as 22h para a unidade 204.'},
-      'task-3': { id: 'task-3', title: 'Realizar Audiência', type: 'Ação Judicial', condominio: 'Condomínio Z', prazo: '05/10/2025', assignee: { name: 'Dr. Dias' }, numeroProcesso: '0098765-43.2025.8.05.0002', descricao: 'Audiência de conciliação agendada para as 14h.' },
-      'task-4': { id: 'task-4', title: 'Elaborar Contrato', type: 'Extrajudicial', condominio: 'Condomínio W', prazo: '11/09/2025', assignee: { name: 'Dr. Nunes' }, descricao: 'Elaboração de novo contrato de prestação de serviços de jardinagem.'},
+      'task-1': { id: 'task-1', title: 'Protocolar Petição Inicial', type: 'Ação Judicial', condominio: 'Condomínio X', prazo: '28/08/2025', assignee: { name: 'Dr. Ramos' }, numeroProcesso: '0012345-67.2025.8.05.0001', descricao: 'Petição referente à cobrança de taxas condominiais em atraso da unidade 101.'},
+      'task-2': { id: 'task-2', title: 'Notificação Extrajudicial', type: 'Extrajudicial', condominio: 'Condomínio Y', prazo: '18/09/2025', assignee: { name: 'Dra. Almeida' }, descricao: 'Enviar notificação sobre barulho excessivo após as 22h para a unidade 204.'},
+      'task-3': { id: 'task-3', title: 'Realizar Audiência', type: 'Ação Judicial', condominio: 'Condomínio Z', prazo: '05/10/2025', assignee: { name: 'Dr. Ramos' }, numeroProcesso: '0098765-43.2025.8.05.0002', descricao: 'Audiência de conciliação agendada para as 14h.' },
+      'task-4': { id: 'task-4', title: 'Elaborar Contrato', type: 'Extrajudicial', condominio: 'Condomínio W', prazo: '11/09/2025', assignee: { name: 'Dra. Almeida' }, descricao: 'Elaboração de novo contrato de prestação de serviços de jardinagem.'},
     },
     columns: {
       'column-1': { id: 'column-1', title: 'Pendentes', taskIds: ['task-1', 'task-2'] },
@@ -54,7 +54,7 @@ const demandasChartData = {
     labels: ['Judicial', 'Extrajudicial'], datasets: [{ label: 'Quantidade', data: [82, 45], backgroundColor: ['#1D3741', '#BD8F9E'], borderColor: '#FFFFFF', borderWidth: 2, }],
 };
 const tarefasChartData = {
-    labels: ['Dr. Dias', 'Dr. Nunes', 'Outros'], datasets: [{ label: 'Tarefas', data: [15, 22, 7], backgroundColor: ['#1D3741', '#BD8F9E', '#D1E3E9'], borderColor: '#FFFFFF', borderWidth: 2, }],
+    labels: ['Dr. Ramos', 'Dra. Almeida', 'Outros'], datasets: [{ label: 'Tarefas', data: [15, 22, 7], backgroundColor: ['#1D3741', '#BD8F9E', '#D1E3E9'], borderColor: '#FFFFFF', borderWidth: 2, }],
 };
 const chartOptions = {
     responsive: true, plugins: { legend: { position: 'bottom' as const, labels: { boxWidth: 12, padding: 20, font: { family: 'Inter, sans-serif' } } } }

@@ -126,8 +126,8 @@ const CadastroAcoesLegais: React.FC = () => {
               </label>
               <select id="advogadoResponsavel" name="advogadoResponsavel" value={formData.advogadoResponsavel} onChange={handleChange} className={getSelectClass(formData.advogadoResponsavel)}>
                 <option value="">Selecione o advogado</option>
-                <option value="dr-dias">Dr. Dias</option>
-                <option value="dr-nunes">Dr. Nunes</option>
+                <option value="dr-ramos">Dr. Ramos</option>
+                <option value="dra-almeida">Dra. Almeida</option>
               </select>
             </div>
 
