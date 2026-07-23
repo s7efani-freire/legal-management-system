@@ -1,16 +1,9 @@
 import React, { useMemo, useState } from "react";
 import PageContainer from "../../components/ui/PageContainer";
-import { ChevronDown } from "lucide-react";
 import api from "../../services/api"; // ajuste o caminho se necessário
-
-const inputClass =
-  "w-full h-12 px-1 border-0 border-b border-gray-400 text-black bg-white " +
-  "focus:border-primary hover:border-gray-600 focus:ring-0 transition-colors " +
-  "placeholder:italic placeholder:text-gray-400";
-
-const selectClass =
-  "w-full h-12 px-1 appearance-none border-0 border-b border-gray-400 text-black bg-white " +
-  "focus:border-primary hover:border-gray-600 focus:ring-0 transition-colors";
+import Input from "../../components/ui/Input";
+import Select from "../../components/ui/Select";
+import Button from "../../components/ui/Button";
 
 const UFS = [
   "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO",
@@ -219,78 +212,67 @@ const CadastroCondominio: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
           <div>
             <label>Razão Social</label>
-            <input
+            <Input
               type="text"
               name="razaoSocial"
               value={formData.razaoSocial}
               onChange={handleChange}
-              className={inputClass}
               placeholder="Digite a razão social do condomínio"
             />
           </div>
 
           <div>
             <label>Nome Fantasia</label>
-            <input
+            <Input
               type="text"
               name="nomeFantasia"
               value={formData.nomeFantasia}
               onChange={handleChange}
-              className={inputClass}
               placeholder="Nome curto ou fantasia"
             />
           </div>
 
           <div>
             <label>E-mail</label>
-            <input
+            <Input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={inputClass}
               placeholder="emaildocondominio@email.com"
             />
           </div>
 
           <div>
             <label>CNPJ</label>
-            <input
+            <Input
               type="text"
               name="cnpj"
               value={formData.cnpj}
               onChange={handleChange}
-              className={inputClass}
               placeholder="Digite o CNPJ"
             />
           </div>
 
           <div>
             <label>Telefone</label>
-            <input
+            <Input
               type="text"
               name="telefone"
               value={formData.telefone}
               onChange={handleChange}
-              className={inputClass}
               placeholder="+55 (xx) xxxx-xxxx"
             />
           </div>
 
-          <div className="relative">
+          <div>
             <label>Tipo de Telefone</label>
-            <select
-              name="tipoTelefone"
-              value={formData.tipoTelefone}
-              onChange={handleChange}
-              className={selectClass}
-            >
-              <option value="" className="text-gray-400">Selecione</option>
+            <Select name="tipoTelefone" value={formData.tipoTelefone} onChange={handleChange}>
+              <option value="">Selecione</option>
               <option value="LANDLINE">Fixo</option>
               <option value="MOBILE">Celular</option>
               <option value="OTHER">Outro</option>
-            </select>
-            <ChevronDown className="absolute right-0 bottom-3 w-5 h-5 text-gray-400 pointer-events-none" />
+            </Select>
           </div>
 
           <div className="md:col-span-2">
@@ -325,24 +307,17 @@ const CadastroCondominio: React.FC = () => {
             </button>
           </div>
 
-          <div className="md:col-span-2 relative">
+          <div className="md:col-span-2">
             <label>Tipo de Condomínio (características)</label>
-            <select
-              name="tipoCondominio"
-              value={formData.tipoCondominio}
-              onChange={handleChange}
-              className={selectClass}
-            >
-              <option value="" className="text-gray-400">Selecione</option>
+            <Select name="tipoCondominio" value={formData.tipoCondominio} onChange={handleChange}>
+              <option value="">Selecione</option>
               {CONDO_TYPES.map((t) => (
                 <option key={t.id} value={t.id}>{t.label}</option>
               ))}
-            </select>
-
-            <ChevronDown className="absolute right-0 bottom-3 w-5 h-5 text-gray-400 pointer-events-none" />
+            </Select>
 
             {selectedCondoType && (
-              <div className="mt-3 text-sm text-gray-600">
+              <div className="mt-3 text-sm text-gray-700">
                 <p className="font-medium text-gray-700">{selectedCondoType.description}</p>
                 <p className="mt-1">
                   Campos de unidade usados no cadastro de morador:{" "}
@@ -367,13 +342,12 @@ const CadastroCondominio: React.FC = () => {
 
           <div>
             <label>CEP</label>
-            <input
+            <Input
               type="text"
               name="cep"
               value={formData.cep}
               onChange={handleChange}
               onBlur={handleCepBlur}
-              className={inputClass}
               placeholder="Digite o CEP"
             />
             {cepLoading && <p className="text-xs text-gray-500 mt-1">Buscando endereço...</p>}
@@ -382,59 +356,54 @@ const CadastroCondominio: React.FC = () => {
 
           <div>
             <label>Logradouro</label>
-            <input
+            <Input
               type="text"
               name="logradouro"
               value={formData.logradouro}
               onChange={handleChange}
-              className={inputClass}
               placeholder="Digite a rua ou avenida"
             />
           </div>
 
           <div>
             <label>Número</label>
-            <input
+            <Input
               type="text"
               name="numero"
               value={formData.numero}
               onChange={handleChange}
-              className={inputClass}
               placeholder="N°"
             />
           </div>
 
           <div>
             <label>Complemento</label>
-            <input
+            <Input
               type="text"
               name="complemento"
               value={formData.complemento}
               onChange={handleChange}
-              className={inputClass}
               placeholder="Ex.: Bloco B, sala 10, fundos..."
             />
           </div>
 
-          <div className="relative">
+          <div>
             <label>UF</label>
-            <select name="uf" value={formData.uf} onChange={handleChange} className={selectClass}>
-              <option value="" className="text-gray-400">Selecione</option>
+            <Select name="uf" value={formData.uf} onChange={handleChange}>
+              <option value="">Selecione</option>
               {UFS.map((uf) => (
                 <option key={uf} value={uf}>{uf}</option>
               ))}
-            </select>
-            <ChevronDown className="absolute right-0 bottom-3 w-5 h-5 text-gray-400 pointer-events-none" />
+            </Select>
           </div>
 
           <div>
             <label>Cidade</label>
-            <input
+            <Input
               type="text"
               name="cidade"
               value={formData.cidade}
               onChange={handleChange}
-              className={inputClass}
               placeholder="Cidade"
             />
           </div>
@@ -444,13 +413,9 @@ const CadastroCondominio: React.FC = () => {
         {success && <div className="text-center text-green-600 bg-green-100 p-3 rounded-md w-full">{success}</div>}
 
         <div className="flex justify-end pt-4">
-          <button
-            type="submit"
-            disabled={isSaving}
-            className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:bg-gray-400"
-          >
+          <Button type="submit" disabled={isSaving} className="px-8 py-3">
             {isSaving ? "Salvando..." : "Salvar Cadastro"}
-          </button>
+          </Button>
         </div>
       </form>
     </PageContainer>

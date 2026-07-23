@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from "react";
 import PageContainer from "../../components/ui/PageContainer";
 import axios from "axios"; // usado apenas para ViaCEP (API externa)
-import { Plus, Trash2, ChevronDown } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import api from "../../services/api"; // ajuste o caminho se necessário
-
-const inputClass =
-  "w-full h-12 px-1 border-0 border-b border-gray-400 text-black bg-white " +
-  "focus:border-primary focus:ring-0 hover:border-gray-600 transition-colors " +
-  "placeholder:italic placeholder:text-gray-400";
-
-const selectClass =
-  "w-full h-12 px-1 appearance-none border-0 border-b border-gray-400 text-black bg-white " +
-  "focus:border-primary focus:ring-0 hover:border-gray-600 transition-colors";
+import Input from "../../components/ui/Input";
+import Select from "../../components/ui/Select";
+import Button from "../../components/ui/Button";
 
 const estados = [
   "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG",
@@ -351,12 +345,11 @@ const CadastroCondominos: React.FC = () => {
     return (
       <div key={field}>
         <label className="text-sm">{label}*</label>
-        <input
+        <Input
           type="text"
           name={name}
           value={(u as any)[name]}
           onChange={(e) => handleUnitChange(index, e)}
-          className={inputClass}
           placeholder={placeholder}
           list={options.length ? datalistId : undefined}
           disabled={!u.condominiumId}
@@ -385,13 +378,12 @@ const CadastroCondominos: React.FC = () => {
               <label htmlFor="nome" className="block text-sm font-medium text-text-primary mb-1">
                 Nome*
               </label>
-              <input
+              <Input
                 type="text"
                 id="nome"
                 name="nome"
                 value={formData.nome}
                 onChange={handleChange}
-                className={inputClass}
                 placeholder="Digite o primeiro nome"
               />
             </div>
@@ -400,13 +392,12 @@ const CadastroCondominos: React.FC = () => {
               <label htmlFor="sobrenome" className="block text-sm font-medium text-text-primary mb-1">
                 Sobrenome*
               </label>
-              <input
+              <Input
                 type="text"
                 id="sobrenome"
                 name="sobrenome"
                 value={formData.sobrenome}
                 onChange={handleChange}
-                className={inputClass}
                 placeholder="Digite o sobrenome"
               />
             </div>
@@ -415,13 +406,12 @@ const CadastroCondominos: React.FC = () => {
               <label htmlFor="email" className="block text-sm font-medium text-text-primary mb-1">
                 E-mail
               </label>
-              <input
+              <Input
                 type="email"
                 id="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={inputClass}
                 placeholder="emaildocondomino@email.com"
               />
             </div>
@@ -430,13 +420,12 @@ const CadastroCondominos: React.FC = () => {
               <label htmlFor="documento" className="block text-sm font-medium text-text-primary mb-1">
                 Documento (CPF/CNPJ)*
               </label>
-              <input
+              <Input
                 type="text"
                 id="documento"
                 name="documento"
                 value={formData.documento}
                 onChange={handleChange}
-                className={inputClass}
                 placeholder="Digite o CPF ou CNPJ"
               />
             </div>
@@ -445,48 +434,44 @@ const CadastroCondominos: React.FC = () => {
               <label htmlFor="telefone" className="block text-sm font-medium text-text-primary mb-1">
                 Telefone
               </label>
-              <input
+              <Input
                 type="tel"
                 id="telefone"
                 name="telefone"
                 value={formData.telefone}
                 onChange={handleChange}
-                className={inputClass}
                 placeholder="+55 (xx) xxxx-xxxx"
               />
             </div>
 
-            <div className="relative">
+            <div>
               <label htmlFor="tipoDeTelefone" className="block text-sm font-medium text-text-primary mb-1">
                 Tipo de telefone
               </label>
-              <select
+              <Select
                 id="tipoDeTelefone"
                 name="tipoDeTelefone"
                 value={formData.tipoDeTelefone}
                 onChange={handleChange}
-                className={selectClass}
               >
-                <option value="" className="text-gray-400">Selecione</option>
+                <option value="">Selecione</option>
                 <option value="LANDLINE">Fixo</option>
                 <option value="MOBILE">Celular</option>
                 <option value="OTHER">Outro</option>
-              </select>
-              <ChevronDown className="absolute right-0 bottom-3 w-5 h-5 text-gray-400 pointer-events-none" />
+              </Select>
             </div>
 
             <div>
               <label htmlFor="cep" className="block text-sm font-medium text-text-primary mb-1">
                 CEP
               </label>
-              <input
+              <Input
                 type="text"
                 id="cep"
                 name="cep"
                 value={formData.cep}
                 onChange={handleChange}
                 onBlur={handleCepBlur}
-                className={inputClass}
                 placeholder="Digite o CEP"
               />
             </div>
@@ -495,13 +480,12 @@ const CadastroCondominos: React.FC = () => {
               <label htmlFor="logradouro" className="block text-sm font-medium text-text-primary mb-1">
                 Logradouro
               </label>
-              <input
+              <Input
                 type="text"
                 id="logradouro"
                 name="logradouro"
                 value={formData.logradouro}
                 onChange={handleChange}
-                className={inputClass}
                 placeholder="Rua, avenida..."
               />
             </div>
@@ -510,13 +494,12 @@ const CadastroCondominos: React.FC = () => {
               <label htmlFor="numero" className="block text-sm font-medium text-text-primary mb-1">
                 Número
               </label>
-              <input
+              <Input
                 type="text"
                 id="numero"
                 name="numero"
                 value={formData.numero}
                 onChange={handleChange}
-                className={inputClass}
                 placeholder="Nº"
               />
             </div>
@@ -525,49 +508,45 @@ const CadastroCondominos: React.FC = () => {
               <label htmlFor="complemento" className="block text-sm font-medium text-text-primary mb-1">
                 Complemento
               </label>
-              <input
+              <Input
                 type="text"
                 id="complemento"
                 name="complemento"
                 value={formData.complemento}
                 onChange={handleChange}
-                className={inputClass}
                 placeholder="Bloco, casa, etc."
               />
             </div>
 
-            <div className="relative">
+            <div>
               <label htmlFor="uf" className="block text-sm font-medium text-text-primary mb-1">
                 UF
               </label>
-              <select
+              <Select
                 id="uf"
                 name="uf"
                 value={formData.uf}
                 onChange={handleChange}
-                className={selectClass}
               >
-                <option value="" className="text-gray-400">Selecione</option>
+                <option value="">Selecione</option>
                 {estados.map((sigla) => (
                   <option key={sigla} value={sigla}>
                     {sigla}
                   </option>
                 ))}
-              </select>
-              <ChevronDown className="absolute right-0 bottom-3 w-5 h-5 text-gray-400 pointer-events-none" />
+              </Select>
             </div>
 
             <div>
               <label htmlFor="cidade" className="block text-sm font-medium text-text-primary mb-1">
                 Cidade
               </label>
-              <input
+              <Input
                 type="text"
                 id="cidade"
                 name="cidade"
                 value={formData.cidade}
                 onChange={handleChange}
-                className={inputClass}
                 placeholder="Cidade"
               />
             </div>
@@ -589,16 +568,15 @@ const CadastroCondominos: React.FC = () => {
               return (
                 <div key={index} className="border border-gray-100 rounded-lg p-4">
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-                    <div className="md:col-span-2 relative">
+                    <div className="md:col-span-2">
                       <label className="text-sm">Condomínio*</label>
-                      <select
+                      <Select
                         name="condominiumId"
                         value={u.condominiumId}
                         onChange={(e) => handleUnitChange(index, e)}
-                        className={selectClass}
                         disabled={loadingCondominiums}
                       >
-                        <option value="" className="text-gray-400">
+                        <option value="">
                           {loadingCondominiums ? "Carregando..." : "Selecione"}
                         </option>
                         {condominiums.map((c) => (
@@ -606,9 +584,7 @@ const CadastroCondominos: React.FC = () => {
                             {c.trade_name || c.corporate_name || `Condomínio #${c.id}`}
                           </option>
                         ))}
-                      </select>
-
-                      <ChevronDown className="absolute right-0 bottom-3 w-5 h-5 text-gray-400 pointer-events-none" />
+                      </Select>
 
                       {condo && typeDef && (
                         <p className="mt-1 text-xs text-gray-500">
@@ -680,13 +656,9 @@ const CadastroCondominos: React.FC = () => {
             </div>
           )}
 
-          <button
-            type="submit"
-            className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-primary-dark transition-colors w-full max-w-sm disabled:bg-gray-400"
-            disabled={isLoading}
-          >
+          <Button type="submit" className="w-full max-w-sm px-8 py-3" disabled={isLoading}>
             {isLoading ? "Cadastrando..." : "Cadastrar Condômino"}
-          </button>
+          </Button>
         </div>
       </form>
     </PageContainer>

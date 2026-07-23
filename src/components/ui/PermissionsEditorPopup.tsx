@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { X, Search, ShieldCheck } from "lucide-react";
+import Button from "./Button";
 
 export interface PermissionItem {
   id: number;
@@ -85,7 +86,7 @@ const PermissionsEditorPopup: React.FC<PermissionsEditorPopupProps> = ({
               <h3 className="text-base font-semibold text-gray-900">
                 Gerenciar permissões
               </h3>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-gray-700 mt-1">
                 Usuário: <span className="font-medium text-gray-800">{userName}</span>
               </p>
             </div>
@@ -94,7 +95,7 @@ const PermissionsEditorPopup: React.FC<PermissionsEditorPopupProps> = ({
           <button
             onClick={onClose}
             disabled={loading}
-            className="text-gray-400 hover:text-gray-600 disabled:opacity-60"
+            className="text-gray-400 hover:text-gray-700 disabled:opacity-60"
             aria-label="Fechar"
           >
             <X className="h-5 w-5" />
@@ -167,21 +168,13 @@ const PermissionsEditorPopup: React.FC<PermissionsEditorPopupProps> = ({
 
         {/* footer */}
         <div className="flex items-center justify-end gap-3 p-5 border-t border-gray-100">
-          <button
-            onClick={onClose}
-            disabled={loading}
-            className="px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 disabled:opacity-60"
-          >
+          <Button variant="outline" onClick={onClose} disabled={loading}>
             Cancelar
-          </button>
+          </Button>
 
-          <button
-            onClick={() => onSave(localSelected)}
-            disabled={loading}
-            className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
-          >
+          <Button onClick={() => onSave(localSelected)} disabled={loading}>
             {loading ? "Salvando..." : "Salvar"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

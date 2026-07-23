@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertTriangle, X } from 'lucide-react';
+import Button from './Button';
 
 interface ConfirmDeletePopupProps {
   isOpen: boolean;
@@ -37,35 +38,27 @@ const ConfirmDeletePopup: React.FC<ConfirmDeletePopupProps> = ({
             </div>
             <div>
               <h3 className="text-base font-semibold text-gray-900">{title}</h3>
-              <p className="text-sm text-gray-600 mt-1">{message}</p>
+              <p className="text-sm text-gray-700 mt-1">{message}</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
             disabled={loading}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-gray-400 hover:text-gray-700"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         <div className="flex justify-end gap-3 p-5">
-          <button
-            onClick={onClose}
-            disabled={loading}
-            className="px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50"
-          >
+          <Button variant="outline" onClick={onClose} disabled={loading}>
             Cancelar
-          </button>
+          </Button>
 
-          <button
-            onClick={onConfirm}
-            disabled={loading}
-            className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
-          >
+          <Button variant="danger" onClick={onConfirm} disabled={loading}>
             {loading ? 'Excluindo...' : 'Excluir'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

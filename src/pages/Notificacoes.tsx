@@ -41,8 +41,8 @@ return (
             className="flex items-start gap-4 p-4 flex-grow"
         >
             <div className="flex-shrink-0 mt-1">{getNotificationIcon(notification.type)}</div>
-            <div className="flex-grow">
-                <p className="text-text-primary">{notification.message}</p>
+            <div className="flex-grow min-w-0">
+                <p className="text-text-primary break-words">{notification.message}</p>
                 <p className="text-sm text-gray-500 mt-1 flex items-center">
                     <Clock className="w-4 h-4 mr-1.5" />
                     {notification.time}

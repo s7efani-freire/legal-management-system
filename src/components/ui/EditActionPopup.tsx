@@ -1,7 +1,11 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { AcaoLegal } from '../../pages/AcoesLegais'; 
+import { AcaoLegal } from '../../pages/AcoesLegais';
+import Input from './Input';
+import Select from './Select';
+import Textarea from './Textarea';
+import Button from './Button';
 
 interface EditActionPopupProps {
   isOpen: boolean;
@@ -10,9 +14,7 @@ interface EditActionPopupProps {
   onSave: (updatedAcao: AcaoLegal) => void;
 }
 
-const inputClass = "w-full border-0 border-b border-gray-400 focus:border-primary focus:ring-0 placeholder:italic placeholder:text-gray-400 bg-gray-50/50 p-2 text-sm";
 const labelClass = "font-medium text-text-secondary text-sm";
-const getSelectClass = (value: any) => `w-full appearance-none bg-gray-50/50 border-0 border-b border-gray-400 focus:border-primary focus:ring-0 p-2 text-sm ${!value || value === "" ? "italic text-gray-400" : "not-italic text-black"}`;
 
 const EditActionPopup: React.FC<EditActionPopupProps> = ({ isOpen, onClose, acao, onSave }) => {
   const [formData, setFormData] = useState<AcaoLegal | null>(null);
@@ -68,42 +70,42 @@ const EditActionPopup: React.FC<EditActionPopupProps> = ({ isOpen, onClose, acao
             <h3 className="text-xl font-semibold text-text-secondary">Ação Extrajudicial: #{acao?.id}</h3>
             <p className="text-sm text-gray-500">{acao?.acao}</p>
           </div>
-          
+
           <div className="text-center">
-            <span 
+            <span
               className={`px-4 py-1.5 text-sm font-semibold tracking-wider rounded-full ${getStatusPrincipalStyle(formData.statusCobranca)}`}
             >
               {formData.statusCobranca?.replace('_', ' ') || 'INDEFINIDO'}
             </span>
             <p className="text-xs text-gray-500 mt-2 font-medium">Status Principal</p>
           </div>
-          
+
           <button onClick={onClose} className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800"><X className="w-6 h-6" /></button>
         </div>
-        
+
         <div className="p-6 space-y-6 overflow-y-auto">
           <div className="border border-gray-200 p-4 rounded-lg">
             <h4 className="text-lg font-medium text-text-secondary mb-4">Informações Principais</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5">
               <div>
                 <label htmlFor="id" className={labelClass}>Código</label>
-                <input type="text" name="id" value={formData.id} disabled className={`${inputClass} bg-gray-200 cursor-not-allowed`} />
+                <Input variant="compact" type="text" name="id" value={formData.id} disabled />
               </div>
               <div>
                 <label htmlFor="condominioCliente" className={labelClass}>Condomínio/Cliente</label>
-                <input type="text" name="condominioCliente" value={formData.condominioCliente || ''} disabled className={`${inputClass} bg-gray-200 cursor-not-allowed`} />
+                <Input variant="compact" type="text" name="condominioCliente" value={formData.condominioCliente || ''} disabled />
               </div>
               <div>
                 <label htmlFor="parteContraria" className={labelClass}>Condômino</label>
-                <input type="text" name="parteContraria" value={formData.parteContraria || ''} onChange={handleChange} className={inputClass} placeholder="Ex: João da Silva" />
+                <Input variant="compact" type="text" name="parteContraria" value={formData.parteContraria || ''} onChange={handleChange} placeholder="Ex: João da Silva" />
               </div>
               <div>
                 <label htmlFor="dataInclusao" className={labelClass}>Data de Inclusão</label>
-                <input type="date" name="dataInclusao" value={formatDateForInput(formData.dataInclusao)} onChange={handleChange} className={inputClass} />
+                <Input variant="compact" type="date" name="dataInclusao" value={formatDateForInput(formData.dataInclusao)} onChange={handleChange} />
               </div>
               <div>
                 <label htmlFor="usuarioLogado" className={labelClass}>Usuário Responsável</label>
-                <input type="text" name="usuarioLogado" value={formData.usuarioLogado || ''} disabled className={`${inputClass} bg-gray-200 cursor-not-allowed`} />
+                <Input variant="compact" type="text" name="usuarioLogado" value={formData.usuarioLogado || ''} disabled />
               </div>
             </div>
           </div>
@@ -112,23 +114,23 @@ const EditActionPopup: React.FC<EditActionPopupProps> = ({ isOpen, onClose, acao
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5">
               <div>
                 <label htmlFor="valorOriginal" className={labelClass}>Valor Original (R$)</label>
-                <input type="number" name="valorOriginal" value={formData.valorOriginal || ''} onChange={handleChange} className={inputClass} placeholder="Ex: 832.87" />
+                <Input variant="compact" type="number" name="valorOriginal" value={formData.valorOriginal || ''} onChange={handleChange} placeholder="Ex: 832.87" />
               </div>
               <div>
                 <label htmlFor="debito" className={labelClass}>Débito Atual (R$)</label>
-                <input type="number" name="debito" value={formData.debito || ''} onChange={handleChange} className={inputClass} placeholder="Ex: 950.00" />
+                <Input variant="compact" type="number" name="debito" value={formData.debito || ''} onChange={handleChange} placeholder="Ex: 950.00" />
               </div>
               <div>
                 <label htmlFor="vencimento" className={labelClass}>Vencimento</label>
-                <input type="date" name="vencimento" value={formatDateForInput(formData.vencimento)} onChange={handleChange} className={inputClass} />
+                <Input variant="compact" type="date" name="vencimento" value={formatDateForInput(formData.vencimento)} onChange={handleChange} />
               </div>
               <div>
                 <label htmlFor="ultimaCobranca" className={labelClass}>Última Cobrança</label>
-                <input type="date" name="ultimaCobranca" value={formatDateForInput(formData.ultimaCobranca)} onChange={handleChange} className={inputClass} />
+                <Input variant="compact" type="date" name="ultimaCobranca" value={formatDateForInput(formData.ultimaCobranca)} onChange={handleChange} />
               </div>
                <div>
                 <label htmlFor="mesesAberto" className={labelClass}>Meses em Aberto</label>
-                <input type="number" name="mesesAberto" value={formData.mesesAberto || ''} onChange={handleChange} className={inputClass} placeholder="Ex: 3" />
+                <Input variant="compact" type="number" name="mesesAberto" value={formData.mesesAberto || ''} onChange={handleChange} placeholder="Ex: 3" />
               </div>
             </div>
           </div>
@@ -137,71 +139,71 @@ const EditActionPopup: React.FC<EditActionPopupProps> = ({ isOpen, onClose, acao
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5">
               <div>
                 <label htmlFor="statusProcesso" className={labelClass}>Status do Processo</label>
-                <select name="statusProcesso" value={formData.statusProcesso} onChange={handleChange} className={getSelectClass(formData.statusProcesso)}>
+                <Select variant="compact" name="statusProcesso" value={formData.statusProcesso} onChange={handleChange}>
                   <option value="ATIVO">ATIVO</option>
                   <option value="ARQUIVADO">ARQUIVADO</option>
-                </select>
+                </Select>
               </div>
               <div>
                 <label htmlFor="statusCobranca" className={labelClass}>Status da Cobrança</label>
-                <select name="statusCobranca" value={formData.statusCobranca} onChange={handleChange} className={getSelectClass(formData.statusCobranca)}>
+                <Select variant="compact" name="statusCobranca" value={formData.statusCobranca} onChange={handleChange}>
                   <option value="PENDENTE">PENDENTE</option>
                   <option value="PAGO">PAGO</option>
                   <option value="EM_ACORDO">EM ACORDO</option>
-                </select>
+                </Select>
               </div>
                <div>
                 <label htmlFor="statusAcordo" className={labelClass}>Status/Acordo</label>
-                <select name="statusAcordo" value={formData.statusAcordo} onChange={handleChange} className={getSelectClass(formData.statusAcordo)}>
+                <Select variant="compact" name="statusAcordo" value={formData.statusAcordo} onChange={handleChange}>
                   <option value="NENHUM">Nenhum</option>
                   <option value="EM_ANDAMENTO">Em Andamento</option>
                   <option value="CUMPRIDO">Cumprido</option>
                   <option value="DESCUMPRIDO">Descumprido</option>
-                </select>
+                </Select>
               </div>
               <div>
                 <label htmlFor="prioridade" className={labelClass}>Prioridade</label>
-                <select name="prioridade" value={formData.prioridade} onChange={handleChange} className={getSelectClass(formData.prioridade)}>
+                <Select variant="compact" name="prioridade" value={formData.prioridade} onChange={handleChange}>
                   <option value="BAIXA">Baixa</option>
                   <option value="MEDIA">Média</option>
                   <option value="ALTA">Alta</option>
-                </select>
+                </Select>
               </div>
               <div>
                 <label htmlFor="cnd" className={labelClass}>CND</label>
-                <select name="cnd" value={formData.cnd} onChange={handleChange} className={getSelectClass(formData.cnd)}>
+                <Select variant="compact" name="cnd" value={formData.cnd} onChange={handleChange}>
                     <option value="NAO">Não</option>
                     <option value="SIM">Sim</option>
                     <option value="PENDENTE">Pendente</option>
-                </select>
+                </Select>
               </div>
                <div>
                 <label htmlFor="corte" className={labelClass}>Corte de Serviço</label>
-                <select name="corte" value={formData.corte} onChange={handleChange} className={getSelectClass(formData.corte)}>
+                <Select variant="compact" name="corte" value={formData.corte} onChange={handleChange}>
                     <option value="NAO">Não</option>
                     <option value="SOLICITADO">Solicitado</option>
                     <option value="EXECUTADO">Executado</option>
-                </select>
+                </Select>
               </div>
               <div>
                 <label htmlFor="protesto" className={labelClass}>Protesto</label>
-                <select name="protesto" value={formData.protesto} onChange={handleChange} className={getSelectClass(formData.protesto)}>
+                <Select variant="compact" name="protesto" value={formData.protesto} onChange={handleChange}>
                   <option value="NAO">Não</option>
                   <option value="SIM">Sim</option>
-                </select>
+                </Select>
               </div>
             </div>
           </div>
           <div className="space-y-6">
             <div>
               <h4 className="text-lg font-medium text-text-secondary mb-2">Anotações Gerais</h4>
-              <textarea name="anotacoes" value={formData.anotacoes || ''} onChange={handleChange} className={`${inputClass} bg-yellow-50`} rows={4} placeholder="Adicione observações importantes sobre o caso..."></textarea>
+              <Textarea variant="compact" name="anotacoes" value={formData.anotacoes || ''} onChange={handleChange} className="bg-yellow-50" rows={4} placeholder="Adicione observações importantes sobre o caso..." />
             </div>
           </div>
         </div>
         <div className="flex items-center justify-end p-4 border-t border-gray-200 gap-4 bg-gray-50 rounded-b-lg">
-          <button onClick={onClose} className="bg-gray-200 text-gray-800 py-2 px-6 rounded-md font-medium hover:bg-gray-300 transition-colors">Cancelar</button>
-          <button onClick={handleSave} className="bg-primary text-white py-2 px-6 rounded-md font-medium hover:bg-primary-dark transition-colors">Salvar Alterações</button>
+          <Button variant="outline" onClick={onClose}>Cancelar</Button>
+          <Button onClick={handleSave}>Salvar Alterações</Button>
         </div>
       </div>
     </div>
