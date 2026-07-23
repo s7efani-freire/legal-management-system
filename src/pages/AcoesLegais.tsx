@@ -4,6 +4,7 @@ import PageContainer from "../components/ui/PageContainer";
 import { Plus, Info, Trash2, Edit, Clock, FileText, UserCircle2, User, Landmark, ShieldCheck, X, Calendar, DollarSign, AlertTriangle, Archive, Handshake, FileCheck, Scissors, Gavel, MessageSquare, BarChart } from "lucide-react";
 import DetailsPopup, { DetailItem } from "../components/ui/DetailsPopup";
 import EditActionPopup from "../components/ui/EditActionPopup";
+import Button from "../components/ui/Button";
 
 export interface Andamento {
   data: string;
@@ -431,8 +432,8 @@ const AcoesLegais: React.FC = () => {
                 <option value="EM_ACORDO">Em Acordo</option>
             </select>
             <div className="flex gap-2 sm:col-span-2 lg:col-span-2 justify-end">
-                <button className="w-full sm:w-auto bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">Filtrar</button>
-                <button className="w-full sm:w-auto bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition-colors">Limpar</button>
+                <Button fullWidthOnMobile>Filtrar</Button>
+                <Button variant="neutral" fullWidthOnMobile>Limpar</Button>
             </div>
         </div>
         

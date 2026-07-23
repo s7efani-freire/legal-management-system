@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../../services/api";
-
-const inputClass =
-  "w-full bg-transparent px-1 py-2 border-0 border-b border-gray-400 " +
-  "focus:outline-none focus:ring-0 focus:border-primary " +
-  "placeholder:text-gray-400 placeholder:italic";
-
-const getSelectClass = (value: string) =>
-  `w-full appearance-none bg-transparent px-1 py-2 border-0 border-b border-gray-400
-   focus:border-primary focus:ring-0
-   ${value ? "text-text-primary" : "italic text-gray-400"}`;
+import Input from "../../components/ui/Input";
+import Select from "../../components/ui/Select";
+import Button from "../../components/ui/Button";
 
 const onlyDigits = (v: string) => v.replace(/\D/g, "");
 
@@ -113,42 +106,42 @@ const Cadastro: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label className="text-sm font-medium">Nome*</label>
-              <input type="text" name="nome" value={formData.nome} onChange={handleChange} className={inputClass} />
+              <Input type="text" name="nome" value={formData.nome} onChange={handleChange} />
             </div>
 
             <div>
               <label className="text-sm font-medium">Sobrenome*</label>
-              <input type="text" name="sobrenome" value={formData.sobrenome} onChange={handleChange} className={inputClass} />
+              <Input type="text" name="sobrenome" value={formData.sobrenome} onChange={handleChange} />
             </div>
 
             <div>
               <label className="text-sm font-medium">CPF*</label>
-              <input type="text" name="cpf" value={formData.cpf} onChange={handleChange} className={inputClass} />
+              <Input type="text" name="cpf" value={formData.cpf} onChange={handleChange} />
             </div>
 
             <div>
               <label className="text-sm font-medium">Tipo de Usuário*</label>
-              <select name="tipoUsuario" value={formData.tipoUsuario} onChange={handleChange} className={getSelectClass(formData.tipoUsuario)}>
+              <Select name="tipoUsuario" value={formData.tipoUsuario} onChange={handleChange}>
                 <option value="">Selecione</option>
                 <option value="ADMIN">Administrador</option>
                 <option value="LAWYER">Advogado</option>
                 <option value="MANAGER">Gestor</option>
-              </select>
+              </Select>
             </div>
 
             <div className="sm:col-span-2">
               <label className="text-sm font-medium">Email*</label>
-              <input type="email" name="email" value={formData.email} onChange={handleChange} className={inputClass} />
+              <Input type="email" name="email" value={formData.email} onChange={handleChange} />
             </div>
 
             <div>
               <label className="text-sm font-medium">Senha*</label>
-              <input type="password" name="senha" value={formData.senha} onChange={handleChange} className={inputClass} />
+              <Input type="password" name="senha" value={formData.senha} onChange={handleChange} />
             </div>
 
             <div>
               <label className="text-sm font-medium">Confirmar senha*</label>
-              <input type="password" name="confirmarSenha" value={formData.confirmarSenha} onChange={handleChange} className={inputClass} />
+              <Input type="password" name="confirmarSenha" value={formData.confirmarSenha} onChange={handleChange} />
             </div>
           </div>
 
@@ -159,13 +152,9 @@ const Cadastro: React.FC = () => {
             <div className="text-green-600 bg-green-100 p-3 rounded-md text-center">{success}</div>
           )}
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary-dark disabled:bg-gray-400"
-          >
+          <Button type="submit" disabled={isLoading} className="w-full py-3">
             {isLoading ? "Cadastrando..." : "Cadastrar"}
-          </button>
+          </Button>
 
           <p className="text-center text-sm mt-4">
             Já possui cadastro?{" "}

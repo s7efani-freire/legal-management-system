@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Edit, X } from 'lucide-react';
 import PageContainer from "../components/ui/PageContainer";
+import Button from "../components/ui/Button";
 
 export interface LancamentoHonorarios {
   codigo: number;
@@ -90,8 +91,8 @@ const HonorariosPopup: React.FC<{
         <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
           {/* Informações da Ação */}
           <div className="p-3 bg-gray-50 rounded-md border">
-            <p className="text-sm text-gray-600"><strong>Ação:</strong> {acao.acao}</p>
-            <p className="text-sm text-gray-600"><strong>Cliente:</strong> {acao.condominioCliente}</p>
+            <p className="text-sm text-gray-700"><strong>Ação:</strong> {acao.acao}</p>
+            <p className="text-sm text-gray-700"><strong>Cliente:</strong> {acao.condominioCliente}</p>
           </div>
           
           {/* Campos de Contexto */}
@@ -152,8 +153,8 @@ const HonorariosPopup: React.FC<{
           </div>
         </div>
         <div className="flex justify-end items-center p-4 border-t space-x-2">
-          <button onClick={onClose} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancelar</button>
-          <button onClick={handleSave} className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Salvar Lançamento</button>
+          <Button variant="outline" onClick={onClose}>Cancelar</Button>
+          <Button onClick={handleSave}>Salvar Lançamento</Button>
         </div>
       </div>
     </div>
@@ -205,8 +206,8 @@ const Honorarios: React.FC = () => {
           <input type="text" placeholder="Buscar por cliente..." className="w-full px-3 py-2 border border-accent rounded-lg text-sm italic focus:ring-2 focus:ring-primary/20" />
           <input type="text" placeholder="Buscar por parte contrária..." className="w-full px-3 py-2 border border-accent rounded-lg text-sm italic focus:ring-2 focus:ring-primary/20" />
           <div className="flex gap-2 sm:col-span-2 lg:col-span-2 justify-end">
-            <button className="w-full sm:w-auto bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">Filtrar</button>
-            <button className="w-full sm:w-auto bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition-colors">Limpar</button>
+            <Button fullWidthOnMobile>Filtrar</Button>
+            <Button variant="neutral" fullWidthOnMobile>Limpar</Button>
           </div>
         </div>
 

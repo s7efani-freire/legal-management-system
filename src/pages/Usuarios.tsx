@@ -151,13 +151,13 @@ const UserTable: React.FC<UserTableProps> = ({
             {users.map((user) => (
               <tr key={user.id} className="hover:bg-gray-50">
                 <td className="px-4 py-3 text-sm text-gray-800">{user.nome}</td>
-                <td className="hidden md:table-cell px-4 py-3 text-sm text-gray-600">{user.cadastradoEm ?? "—"}</td>
+                <td className="hidden md:table-cell px-4 py-3 text-sm text-gray-700">{user.cadastradoEm ?? "—"}</td>
 
                 <td className="px-4 py-3 text-sm text-gray-800">
                   <PermissionsIcons userPerms={user.permissions ?? []} permissionDescByName={permissionDescByName} />
                 </td>
 
-                <td className="hidden lg:table-cell px-4 py-3 text-sm text-gray-600">{user.ultimaAtualizacao ?? "—"}</td>
+                <td className="hidden lg:table-cell px-4 py-3 text-sm text-gray-700">{user.ultimaAtualizacao ?? "—"}</td>
 
                 <td className="px-4 py-3 text-sm text-gray-800">
                   <div className="flex items-center justify-center space-x-3">
@@ -174,7 +174,7 @@ const UserTable: React.FC<UserTableProps> = ({
                     {!hideEdit && (
                       <button
                         onClick={() => onEditPermissions(user.id)}
-                        className="text-gray-600 hover:text-gray-900 transition-colors"
+                        className="text-gray-700 hover:text-gray-900 transition-colors"
                         title="Editar permissões"
                       >
                         <Pencil className="w-5 h-5" />
@@ -373,7 +373,7 @@ const Usuarios: React.FC = () => {
   return (
     <div className="relative">
       <PageContainer title="Usuários">
-        {loading && <div className="text-sm text-gray-600">Carregando...</div>}
+        {loading && <div className="text-sm text-gray-700">Carregando...</div>}
         {error && <div className="text-sm text-red-600">{error}</div>}
 
         {!loading && !error && (

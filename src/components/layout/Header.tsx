@@ -94,7 +94,7 @@ const Header: React.FC<{ onMenuClick?: () => void }> = ({ onMenuClick }) => {
     <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <button className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100" onClick={onMenuClick}>
+          <button className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100" onClick={onMenuClick}>
             <Menu className="w-6 h-6" />
           </button>
           <div className="flex items-center space-x-2 text-text-primary">

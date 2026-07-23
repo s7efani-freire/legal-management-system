@@ -2,9 +2,8 @@ import React, { useEffect, useState, ChangeEvent, FormEvent } from "react";
 import PageContainer from "../components/ui/PageContainer";
 import { Camera } from "lucide-react";
 import api from "../services/api"
-
-const inputClass =
-  "w-full bg-transparent px-1 py-2 border-0 border-b border-gray-400 focus:outline-none focus:ring-0 focus:border-primary placeholder:text-gray-400 placeholder:italic";
+import Input from "../components/ui/Input";
+import Button from "../components/ui/Button";
 
 type MeUser = {
   id: number;
@@ -398,24 +397,22 @@ const compressImage = (file: File, maxWidth = 1200, quality = 0.7): Promise<File
                     <label className="block text-sm font-medium text-text-primary mb-1">
                       Nome
                     </label>
-                    <input
+                    <Input
                       type="text"
                       name="first_name"
                       value={userData.first_name}
                       onChange={handleInfoChange}
-                      className={inputClass}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-text-primary mb-1">
                       Sobrenome
                     </label>
-                    <input
+                    <Input
                       type="text"
                       name="last_name"
                       value={userData.last_name}
                       onChange={handleInfoChange}
-                      className={inputClass}
                     />
                   </div>
                 </div>
@@ -424,23 +421,18 @@ const compressImage = (file: File, maxWidth = 1200, quality = 0.7): Promise<File
                   <label className="block text-sm font-medium text-text-primary mb-1">
                     Endereço de Email
                   </label>
-                  <input
+                  <Input
                     type="email"
                     name="email"
                     value={userData.email}
                     onChange={handleInfoChange}
-                    className={inputClass}
                   />
                 </div>
 
                 <div className="pt-4 flex justify-end">
-                  <button
-                    type="submit"
-                    disabled={savingInfo}
-                    className="bg-primary text-white py-2 px-6 rounded-md font-medium hover:bg-primary-dark transition-colors disabled:bg-gray-400"
-                  >
+                  <Button type="submit" disabled={savingInfo}>
                     {savingInfo ? "Salvando..." : "Salvar Alterações"}
-                  </button>
+                  </Button>
                 </div>
               </form>
             )}
@@ -451,12 +443,11 @@ const compressImage = (file: File, maxWidth = 1200, quality = 0.7): Promise<File
                   <label className="block text-sm font-medium text-text-primary mb-1">
                     Senha Atual
                   </label>
-                  <input
+                  <Input
                     type="password"
                     name="current"
                     value={passwords.current}
                     onChange={handlePasswordChange}
-                    className={inputClass}
                     placeholder="Digite sua senha atual"
                   />
                 </div>
@@ -465,12 +456,11 @@ const compressImage = (file: File, maxWidth = 1200, quality = 0.7): Promise<File
                   <label className="block text-sm font-medium text-text-primary mb-1">
                     Nova Senha
                   </label>
-                  <input
+                  <Input
                     type="password"
                     name="new"
                     value={passwords.new}
                     onChange={handlePasswordChange}
-                    className={inputClass}
                     placeholder="Mínimo 8 caracteres"
                   />
                 </div>
@@ -479,24 +469,19 @@ const compressImage = (file: File, maxWidth = 1200, quality = 0.7): Promise<File
                   <label className="block text-sm font-medium text-text-primary mb-1">
                     Confirmar Nova Senha
                   </label>
-                  <input
+                  <Input
                     type="password"
                     name="confirm"
                     value={passwords.confirm}
                     onChange={handlePasswordChange}
-                    className={inputClass}
                     placeholder="Repita a nova senha"
                   />
                 </div>
 
                 <div className="pt-4 flex justify-end">
-                  <button
-                    type="submit"
-                    disabled={savingPass}
-                    className="bg-primary text-white py-2 px-6 rounded-md font-medium hover:bg-primary-dark transition-colors disabled:bg-gray-400"
-                  >
+                  <Button type="submit" disabled={savingPass}>
                     {savingPass ? "Alterando..." : "Alterar Senha"}
-                  </button>
+                  </Button>
                 </div>
               </form>
             )}

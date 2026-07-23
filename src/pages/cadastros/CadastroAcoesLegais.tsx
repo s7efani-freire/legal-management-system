@@ -3,14 +3,10 @@ import PageContainer from '../../components/ui/PageContainer';
 import { FileDown } from 'lucide-react';
 import { Switch } from '@headlessui/react';
 import { gerarNotificacaoPDF } from '../../utils/pdfGenerator';
-
-// Definições de classe que você forneceu
-const inputClass =
-  'w-full border-0 border-b border-gray-400 focus:border-primary focus:ring-0 placeholder:italic placeholder:text-gray-400';
-const getSelectClass = (value: string) =>
-  `w-full appearance-none bg-transparent border-0 border-b border-gray-400 
-   focus:border-primary focus:ring-0
-   ${value ? 'not-italic text-black' : 'italic text-gray-400'}`;
+import Input from '../../components/ui/Input';
+import Select from '../../components/ui/Select';
+import Textarea from '../../components/ui/Textarea';
+import Button from '../../components/ui/Button';
 
 const CadastroAcoesLegais: React.FC = () => {
   const [isJudicial, setIsJudicial] = useState(false);
@@ -92,7 +88,7 @@ const CadastroAcoesLegais: React.FC = () => {
               <label htmlFor="titulo" className="block text-sm font-medium text-text-primary mb-1">
                 Título*
               </label>
-              <input type="text" id="titulo" name="titulo" value={formData.titulo} onChange={handleChange} placeholder="Digite o título da ação" className={inputClass} />
+              <Input type="text" id="titulo" name="titulo" value={formData.titulo} onChange={handleChange} placeholder="Digite o título da ação" />
             </div>
 
             <div className="md:col-span-1 flex flex-col justify-end">
@@ -117,47 +113,47 @@ const CadastroAcoesLegais: React.FC = () => {
               <label htmlFor="descricao" className="block text-sm font-medium text-text-primary mb-1">
                 Descrição
               </label>
-              <textarea id="descricao" name="descricao" value={formData.descricao} onChange={handleChange} placeholder="Descreva a ação" rows={3} className={inputClass} />
+              <Textarea id="descricao" name="descricao" value={formData.descricao} onChange={handleChange} placeholder="Descreva a ação" rows={3} />
             </div>
 
             <div className="md:col-span-1">
               <label htmlFor="advogadoResponsavel" className="block text-sm font-medium text-text-primary mb-1">
                 Advogado Responsável
               </label>
-              <select id="advogadoResponsavel" name="advogadoResponsavel" value={formData.advogadoResponsavel} onChange={handleChange} className={getSelectClass(formData.advogadoResponsavel)}>
+              <Select id="advogadoResponsavel" name="advogadoResponsavel" value={formData.advogadoResponsavel} onChange={handleChange}>
                 <option value="">Selecione o advogado</option>
                 <option value="dr-ramos">Dr. Ramos</option>
                 <option value="dra-almeida">Dra. Almeida</option>
-              </select>
+              </Select>
             </div>
 
             <div className="md:col-span-1">
               <label htmlFor="honorario" className="block text-sm font-medium text-text-primary mb-1">
                 Honorário
               </label>
-              <input type="text" id="honorario" name="honorario" value={formData.honorario} onChange={handleChange} placeholder="R$ 0,00" className={inputClass} />
+              <Input type="text" id="honorario" name="honorario" value={formData.honorario} onChange={handleChange} placeholder="R$ 0,00" />
             </div>
 
             <div className="md:col-span-1">
               <label htmlFor="condominio" className="block text-sm font-medium text-text-primary mb-1">
                 Condomínio*
               </label>
-              <select id="condominio" name="condominio" value={formData.condominio} onChange={handleChange} className={getSelectClass(formData.condominio)}>
+              <Select id="condominio" name="condominio" value={formData.condominio} onChange={handleChange}>
                 <option value="">Selecione ou digite para pesquisar</option>
                 <option value="Condomínio A">Condomínio Exemplo 1</option>
                 <option value="Condomínio B">Condomínio Exemplo 2</option>
-              </select>
+              </Select>
             </div>
 
             <div className="md:col-span-1">
               <label htmlFor="condominos" className="block text-sm font-medium text-text-primary mb-1">
                 Condômino
               </label>
-              <select id="condominos" name="condominos" value={formData.condominos} onChange={handleChange} className={getSelectClass(formData.condominos)}>
+              <Select id="condominos" name="condominos" value={formData.condominos} onChange={handleChange}>
                 <option value="">Selecione ou digite para pesquisar</option>
                 <option value="João Silva">João Silva</option>
                 <option value="Maria Santos">Maria Santos</option>
-              </select>
+              </Select>
             </div>
           </div>
         </div>
@@ -170,44 +166,44 @@ const CadastroAcoesLegais: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
               <div>
                 <label htmlFor="instanciaJudicial" className="block text-sm font-medium text-text-primary mb-1">Instância Judicial</label>
-                <input type="text" id="instanciaJudicial" name="instanciaJudicial" value={formData.instanciaJudicial} onChange={handleChange} placeholder="Ex: Primeira Instância" className={inputClass}/>
+                <Input type="text" id="instanciaJudicial" name="instanciaJudicial" value={formData.instanciaJudicial} onChange={handleChange} placeholder="Ex: Primeira Instância" />
               </div>
               <div>
                 <label htmlFor="numeroProcesso" className="block text-sm font-medium text-text-primary mb-1">Número do Processo</label>
-                <input type="text" id="numeroProcesso" name="numeroProcesso" value={formData.numeroProcesso} onChange={handleChange} placeholder="Digite o número do processo" className={inputClass}/>
+                <Input type="text" id="numeroProcesso" name="numeroProcesso" value={formData.numeroProcesso} onChange={handleChange} placeholder="Digite o número do processo" />
               </div>
               <div>
                 <label htmlFor="tribunal" className="block text-sm font-medium text-text-primary mb-1">Tribunal</label>
-                <input type="text" id="tribunal" name="tribunal" value={formData.tribunal} onChange={handleChange} placeholder="Ex: TJBA" className={inputClass}/>
+                <Input type="text" id="tribunal" name="tribunal" value={formData.tribunal} onChange={handleChange} placeholder="Ex: TJBA" />
               </div>
               <div>
                 <label htmlFor="varaJuizo" className="block text-sm font-medium text-text-primary mb-1">Vara ou Juízo</label>
-                <input type="text" id="varaJuizo" name="varaJuizo" value={formData.varaJuizo} onChange={handleChange} placeholder="Ex: 1ª Vara Cível" className={inputClass}/>
+                <Input type="text" id="varaJuizo" name="varaJuizo" value={formData.varaJuizo} onChange={handleChange} placeholder="Ex: 1ª Vara Cível" />
               </div>
               <div>
                 <label htmlFor="forum" className="block text-sm font-medium text-text-primary mb-1">Fórum</label>
-                <input type="text" id="forum" name="forum" value={formData.forum} onChange={handleChange} placeholder="Digite o fórum" className={inputClass}/>
+                <Input type="text" id="forum" name="forum" value={formData.forum} onChange={handleChange} placeholder="Digite o fórum" />
               </div>
               <div className="md:col-span-1">
                 <label htmlFor="linkTribunal" className="block text-sm font-medium text-text-primary mb-1">Link do tribunal</label>
-                <input type="url" id="linkTribunal" name="linkTribunal" value={formData.linkTribunal} onChange={handleChange} placeholder="Cole aqui o link do tribunal" className={inputClass}/>
+                <Input type="url" id="linkTribunal" name="linkTribunal" value={formData.linkTribunal} onChange={handleChange} placeholder="Cole aqui o link do tribunal" />
               </div>
               <div>
                 <label htmlFor="valorCausa" className="block text-sm font-medium text-text-primary mb-1">Valor da causa</label>
-                <input type="text" id="valorCausa" name="valorCausa" value={formData.valorCausa} onChange={handleChange} placeholder="R$ 0,00" className={inputClass}/>
+                <Input type="text" id="valorCausa" name="valorCausa" value={formData.valorCausa} onChange={handleChange} placeholder="R$ 0,00" />
               </div>
               <div>
                 <label htmlFor="valorCondenacao" className="block text-sm font-medium text-text-primary mb-1">Valor da Condenação</label>
-                <input type="text" id="valorCondenacao" name="valorCondenacao" value={formData.valorCondenacao} onChange={handleChange} placeholder="R$ 0,00" className={inputClass}/>
+                <Input type="text" id="valorCondenacao" name="valorCondenacao" value={formData.valorCondenacao} onChange={handleChange} placeholder="R$ 0,00" />
               </div>
               <div className="md:col-span-1">
                   <label htmlFor="dataDistribuicao" className="block text-sm font-medium text-text-primary mb-1">Data de distribuição</label>
-                  <input type="date" id="dataDistribuicao" name="dataDistribuicao" value={formData.dataDistribuicao} onChange={handleChange} className={inputClass} />
+                  <Input type="date" id="dataDistribuicao" name="dataDistribuicao" value={formData.dataDistribuicao} onChange={handleChange} />
               </div>
             </div>
           </div>
         )}
-        
+
         {error && <div className="text-center text-red-600 bg-red-100 p-3 rounded-md w-full">{error}</div>}
 
         <div className="flex justify-between items-center pt-4 md:pt-6">
@@ -220,13 +216,9 @@ const CadastroAcoesLegais: React.FC = () => {
                 <span>{isJudicial ? 'Gerar Relatório PDF' : 'Gerar Notificação PDF'}</span>
             </button>
 
-            <button
-                type="submit"
-                className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-primary-dark transition-colors"
-                disabled={isLoading}
-            >
+            <Button type="submit" className="px-8 py-3" disabled={isLoading}>
                 {isLoading ? 'Cadastrando...' : 'Cadastrar Ação'}
-            </button>
+            </Button>
         </div>
       </form>
     </PageContainer>

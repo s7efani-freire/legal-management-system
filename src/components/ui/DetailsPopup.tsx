@@ -1,5 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
+import Button from './Button';
 
 export interface DetailItem {
     icon?: React.ReactNode;
@@ -43,16 +44,14 @@ const DetailsPopup: React.FC<DetailsPopupProps> = ({ isOpen, onClose, title, det
                     {fullWidthDetail && fullWidthDetail.value && (
                         <div>
                             <h4 className="font-semibold text-text-primary mb-1">{fullWidthDetail.label}</h4>
-                            <p className="text-gray-600 bg-gray-50 p-3 rounded-md">{fullWidthDetail.value}</p>
+                            <p className="text-gray-700 bg-gray-50 p-3 rounded-md">{fullWidthDetail.value}</p>
                         </div>
                     )}
                 </div>
 
                 
                 <div className="flex items-center justify-end p-6 border-t border-gray-200">
-                    <button onClick={onClose} className="bg-primary text-white py-2 px-6 rounded-md font-medium hover:bg-primary-dark transition-colors">
-                        Fechar
-                    </button>
+                    <Button onClick={onClose}>Fechar</Button>
                 </div>
             </div>
         </div>
@@ -67,7 +66,7 @@ const DetailItemComponent: React.FC<DetailItem> = ({ icon, label, value }) => {
             {icon && <span className='text-primary mt-1'>{React.cloneElement(icon as React.ReactElement, { className: 'w-5 h-5' })}</span>}
             <div>
                 <p className="font-semibold text-text-primary">{label}</p>
-                <p className="text-gray-600 break-words">{formattedValue || 'N/A'}</p>
+                <p className="text-gray-700 break-words">{formattedValue || 'N/A'}</p>
             </div>
         </div>
     );

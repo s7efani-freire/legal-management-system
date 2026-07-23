@@ -3,6 +3,7 @@ import PageContainer from "../components/ui/PageContainer";
 import { Info, Trash2, Plus, Building, Mail, Phone, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import DetailsPopup, { DetailItem } from "../components/ui/DetailsPopup";
+import Button from "../components/ui/Button";
 import api from "../services/api";
 
 interface Dwelling {
@@ -160,23 +161,13 @@ const Condominos: React.FC = () => {
           />
 
           <div className="flex gap-2 sm:col-span-2 lg:col-span-2 justify-end">
-            <button
-              type="button"
-              onClick={handleFilter}
-              className="w-full sm:w-auto bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors"
-              disabled={loading}
-            >
+            <Button type="button" onClick={handleFilter} disabled={loading} fullWidthOnMobile>
               {loading ? "Filtrando..." : "Filtrar"}
-            </button>
+            </Button>
 
-            <button
-              type="button"
-              onClick={handleClear}
-              className="w-full sm:w-auto bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition-colors"
-              disabled={loading}
-            >
+            <Button type="button" variant="neutral" onClick={handleClear} disabled={loading} fullWidthOnMobile>
               Limpar
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -219,10 +210,10 @@ const Condominos: React.FC = () => {
                   return (
                     <tr key={item.id} className="hover:bg-gray-50">
                       <td className="px-4 py-3 text-sm text-gray-800">{name || "-"}</td>
-                      <td className="hidden md:table-cell px-4 py-3 text-sm text-gray-600">
+                      <td className="hidden md:table-cell px-4 py-3 text-sm text-gray-700">
                         {item.document_number ?? "-"}
                       </td>
-                      <td className="hidden lg:table-cell px-4 py-3 text-sm text-gray-600">
+                      <td className="hidden lg:table-cell px-4 py-3 text-sm text-gray-700">
                         {item.phone ?? "-"}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-800">{firstCondo}</td>

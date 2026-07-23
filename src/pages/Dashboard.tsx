@@ -68,7 +68,7 @@ const TaskCard: React.FC<{ task: Task; index: number; onCardClick: (taskId: stri
           {(provided, snapshot) => (
             <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} onClick={() => onCardClick(task.id)} className={`p-4 bg-white rounded-lg border border-accent shadow-sm mb-3 cursor-pointer hover:border-primary ${snapshot.isDragging ? 'shadow-lg' : ''}`}>
               <span className={`text-xs font-semibold px-2 py-1 rounded-full ${ task.type === 'Ação Judicial' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800' }`}>{task.type}</span>
-              <h4 className="font-semibold text-text-secondary mt-2">{task.title}</h4>
+              <h4 className="font-semibold text-text-secondary mt-2 break-words">{task.title}</h4>
               <div className="flex items-center text-sm text-gray-500 mt-1"> <Clock className="w-4 h-4 mr-2" /> <span>Prazo: {task.prazo}</span></div>
               <div className="mt-4 pt-3 border-t border-gray-200 flex items-center justify-end">
                  <div className="flex items-center text-xs text-gray-500"><span>{task.assignee.name}</span><UserCircle2 className="w-6 h-6 ml-2 text-gray-400" /></div>
