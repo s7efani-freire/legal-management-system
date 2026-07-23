@@ -1,28 +1,24 @@
-# Sistema de Gestão de Condomínios
+# Sistema de Gestão de Condomínios (Frontend)
 
-Este projeto é composto por:
+Branch usada para o deploy no Vercel. Contém apenas o frontend em React (Vite), rodando com dados mockados diretamente nos componentes — sem dependência de backend.
 
-- **Frontend** em React (Vite) — código-fonte em `src/`
-- **Backend** em Laravel, com autenticação via Sanctum — código-fonte em `backend/`
+O backend (Laravel) vive na branch `master`, em `backend/`.
 
 ---
 
 ## Requisitos
 
 - Node.js 18+
-- PHP 8.2+ e Composer (apenas para rodar o backend)
 
 ---
 
-## Frontend (React)
-
-### Instalação
+## Instalação
 
 ```bash
 npm install
 ```
 
-### Subindo o frontend
+## Subindo o frontend
 
 ```bash
 npm run dev
@@ -30,38 +26,8 @@ npm run dev
 
 O frontend ficará disponível em `http://localhost:5173`.
 
-> As telas atualmente consomem dados mockados diretamente nos componentes — não é necessário subir o backend para navegar pela aplicação.
-
-### Build de produção
+## Build de produção
 
 ```bash
 npm run build
-```
-
----
-
-## Backend (Laravel)
-
-Instruções detalhadas, incluindo configuração de banco de dados, em [`backend/README.md`](backend/README.md).
-
-### Instalação rápida
-
-```bash
-cd backend
-composer install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate
-php artisan serve
-```
-
-A API ficará disponível em `http://localhost:8000`.
-
----
-
-## Estrutura resumida
-
-```
-src/            # frontend (React + Vite)
-backend/        # backend (Laravel + Sanctum)
 ```
