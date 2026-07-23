@@ -1,121 +1,67 @@
 # Sistema de Gestão de Condomínios
 
 Este projeto é composto por:
-- **Backend** em PHP puro, utilizando o servidor embutido do PHP
-- **Frontend** em React (Vite)
-- **Banco de dados** MySQL (via XAMPP)
 
-O backend **não utiliza Apache**. Ele é servido através do comando `php -S`, o que permite rodar o projeto fora do `htdocs`.
+- **Frontend** em React (Vite) — código-fonte em `src/`
+- **Backend** em Laravel, com autenticação via Sanctum — código-fonte em `backend/`
 
 ---
 
 ## Requisitos
 
-- PHP 8.1 ou superior (com PDO MySQL habilitado)
-- Composer
 - Node.js 18+
-- MySQL (XAMPP, WAMP ou similar)
+- PHP 8.2+ e Composer (apenas para rodar o backend)
 
 ---
 
-## Backend (API PHP)
+## Frontend (React)
 
 ### Instalação
-Na raiz do projeto, instale as dependências PHP:
 
-composer install
-
-### Configuração do banco
-
-Inicie o MySQL no XAMPP
-
-Crie o banco de dados conforme o script:
-
-app/Models/SQL.sql
-
-Ajuste as credenciais do banco em:
-
-app/config/database.php
-
-### Subindo a API
-
-O backend é servido pelo servidor embutido do PHP:
-
-php -S localhost:8000 -t public
-
-
-### Endpoints disponíveis:
-
-GET /api/condominiums
-
-POST /api/condominiums
-
-POST /api/residents
-
-GET /api/units/options
-
-A API ficará disponível em:
-
-http://localhost:8000
-
-
-Importante: sempre que reiniciar o computador, este comando precisa ser executado novamente.
-
-### Frontend (React)
-### Instalação
-
-Entre na pasta do frontend e instale as dependências:
-
+```bash
 npm install
+```
 
 ### Subindo o frontend
+
+```bash
 npm run dev
+```
 
+O frontend ficará disponível em `http://localhost:5173`.
 
-O frontend ficará disponível em:
+> As telas atualmente consomem dados mockados diretamente nos componentes — não é necessário subir o backend para navegar pela aplicação.
 
-http://localhost:5173
+### Build de produção
 
-### Fluxo de desenvolvimento
+```bash
+npm run build
+```
 
-Inicie o MySQL (XAMPP)
+---
 
-Suba a API:
+## Backend (Laravel)
 
-php -S localhost:8000 -t public
+Instruções detalhadas, incluindo configuração de banco de dados, em [`backend/README.md`](backend/README.md).
 
+### Instalação rápida
 
-Suba o frontend:
+```bash
+cd backend
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```
 
-npm run dev
+A API ficará disponível em `http://localhost:8000`.
 
+---
 
-Acesse o sistema pelo navegador
+## Estrutura resumida
 
-Observações importantes
-
-O projeto não precisa estar no htdocs
-
-O Apache do XAMPP não é necessário
-
-Apenas o MySQL é utilizado do XAMPP
-
-A pasta vendor/ é ignorada no Git e deve ser recriada com composer install
-
-### Estrutura resumida
-app/
- ├─ Controllers/
- ├─ Core/
- ├─ Models/
- ├─ Services/
- └─ Utils/
-
-public/
- └─ api/
-    └─ index.php
-
-src/
- └─ pages/
-    ├─ Condominios.tsx
-    ├─ Residentes.tsx
-    └─ cadastros/
+```
+src/            # frontend (React + Vite)
+backend/        # backend (Laravel + Sanctum)
+```
