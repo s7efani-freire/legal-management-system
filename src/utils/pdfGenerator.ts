@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import logo from '/logo.png';
+import logo from '/logo-white.png';
 
 const PRIMARY: [number, number, number] = [29, 55, 65]; // #1D3741
 const SECONDARY: [number, number, number] = [189, 143, 158]; // #BD8F9E
